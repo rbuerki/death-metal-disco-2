@@ -32,3 +32,4 @@ dependencies:
     - django-allauth
     - django-crispy-forms
     - crispy-bootstrap5
+    - environs[django]
