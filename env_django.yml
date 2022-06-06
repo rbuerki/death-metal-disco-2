@@ -1,0 +1,34 @@
+name: django
+channels:
+  - conda-forge
+dependencies:
+  - python==3.10
+  - pip
+  # CODE FORMATTERS & lINTERS
+  - black
+  - autopep8
+  - flake8
+  - flake8-bugbear
+  - mypy
+  # JUPYTER STUFF
+  - jupyter
+  - jupyter_contrib_nbextensions
+  - ipywidgets
+  - jupytext
+  # SQL
+  - psycopg2  
+  - ipython-sql
+  # DATA RELATED
+  - numpy
+  - pandas
+  - pyarrow
+  - pillow
+
+  - pip:
+    - rich
+    - xlsxwriter
+    # DJANGO & WEB
+    - Django==4.0.4
+    - django-allauth
+    - django-crispy-forms
+    - crispy-bootstrap5
