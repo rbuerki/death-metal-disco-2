@@ -20,7 +20,8 @@ class RecordAdmin(admin.ModelAdmin):
         "title",
         "purchase_date",
         "is_active",
-    )  # TODO: show many to many fields
+    )  # TODO: show many to many fields, maybe like this:
+    # C:\Users\r2d4\OneDrive\code\projects\22-05_django_books\books\admin.py
     list_display_links = ("id", "title")
     list_filter = ("genre",)  # TODO how to filter on artist or label ...
     list_editable = ("purchase_date",)  # more for demo purposes ...

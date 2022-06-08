@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 
 def validate_credit_trx(value):
-    if value in ["Addition", "Initial Load", "Purchase", "Remove"]:  # TODO really?
+    if value in ["Addition", "Initial Load", "Purchase", "Removal"]:  # TODO really?
         return value
     else:
         raise ValidationError("Not a valid credit trx type.")
@@ -30,7 +30,9 @@ class Country(models.Model):
 class Artist(models.Model):
     # id = models.AutoField(primary_key=True)
     artist_name = models.CharField(max_length=255, unique=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    country = models.ForeignKey(
+        Country, on_delete=models.CASCADE, related_name="artists"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -72,14 +74,16 @@ class Record(models.Model):
     # id = models.AutoField(primary_key=True)  # TODO: check if UUID is better
     title = models.CharField(max_length=255)
     year = models.SmallIntegerField(default=datetime.now().year)
-    record_format = models.OneToOneField(RecordFormat, on_delete=models.CASCADE)
+    record_format = models.ForeignKey(
+        RecordFormat, on_delete=models.CASCADE, related_name="records"
+    )
     color = models.CharField(max_length=255, blank=True)
     lim_edition = models.CharField(max_length=50, blank=True)
     number = models.CharField(max_length=50, blank=True)
     remarks = models.CharField(max_length=255, blank=True)
-    genre = models.OneToOneField(Genre, on_delete=models.CASCADE)
-    artist = models.ManyToManyField(Artist)
-    label = models.ManyToManyField(Label)
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, related_name="records")
+    artists = models.ManyToManyField(Artist, related_name="records")
+    labels = models.ManyToManyField(Label, related_name="records")
     purchase_date = models.DateField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
     is_digitized = models.BooleanField(default=False)
@@ -94,7 +98,7 @@ class Record(models.Model):
     #     return self.id
 
     def __str__(self):
-        return f"{self.title} ({self.artist})"
+        return f"{self.title} ({self.artists})"
 
 
 class CreditTrx(models.Model):
@@ -103,16 +107,11 @@ class CreditTrx(models.Model):
     trx_type = models.CharField(max_length=50, validators=[validate_credit_trx])
     credit_value = models.SmallIntegerField()
     credit_saldo = models.SmallIntegerField()
-    record = models.ForeignKey(Record, on_delete=models.CASCADE)
+    record = models.ForeignKey(
+        Record, on_delete=models.CASCADE, related_name="credit_trx"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __repr__(self):
-        return (
-            f"<id={self.id}, "
-            f"date={self.trx_date}, "
-            f"type={self.trx_type}, "
-            f"value={self.credit_value}, "
-            f"saldo={self.credit_saldo}, "
-            f"record_id={self.record})>"
-        )
+        return f"{self.trx_type} (value={self.credit_value})"
