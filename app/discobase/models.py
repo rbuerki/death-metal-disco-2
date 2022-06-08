@@ -19,7 +19,7 @@ def validate_rating_value(value):
 
 
 class Country(models.Model):
-    country_name = models.CharField(max_length=50)
+    country_name = models.CharField(max_length=50, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -29,12 +29,19 @@ class Country(models.Model):
 
 class Artist(models.Model):
     # id = models.AutoField(primary_key=True)
-    artist_name = models.CharField(max_length=255, unique=True)
+    artist_name = models.CharField(max_length=255)
     country = models.ForeignKey(
         Country, on_delete=models.CASCADE, related_name="artists"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["artist_name", "country"], name="artist_unique"
+            )
+        ]
 
     def __str__(self):
         return f"{self.artist_name} ({self.country})"
@@ -93,9 +100,10 @@ class Record(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # @property
-    # def record_id(self):
-    #     return self.id
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["title", "artists"], name="record_unique")
+        ]
 
     def __str__(self):
         return f"{self.title} ({self.artists})"
