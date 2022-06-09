@@ -100,10 +100,11 @@ class Record(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["title", "artists"], name="record_unique")
-        ]
+    # TODO uniqueconstraint cannot take m2m fields ...
+    # class Meta:
+    #     constraints = [
+    #         models.UniqueConstraint(fields=["title", "artists"], name="record_unique")
+    #     ]
 
     def __str__(self):
         return f"{self.title} ({self.artists})"

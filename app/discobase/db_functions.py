@@ -31,7 +31,7 @@ def parse_strings_to_lists(
     return insert_data
 
 
-def create_new_discobase_entry(insert_data: dict[str, Any]) -> Record:
+def create_new_discobase_entry(insert_data: dict[str, Any]) -> None:
     """Use the information in the passed insert_data to
     create all the necessary new database entries.
     """
@@ -78,6 +78,7 @@ def create_new_discobase_entry(insert_data: dict[str, Any]) -> Record:
     record.artists.set(artists)
     record.labels.set(labels)
 
+    # TODO unique constraint not possible one m2m fields! implement custom
     try:
         record.save()
         success = True
@@ -100,5 +101,3 @@ def create_new_discobase_entry(insert_data: dict[str, Any]) -> Record:
             credit_value=credit_value,
             credit_saldo=credit_saldo + credit_saldo,
         )
-
-    # return record
