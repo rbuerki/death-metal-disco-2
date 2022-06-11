@@ -5,17 +5,18 @@ from django.core.exceptions import ValidationError
 
 
 def validate_credit_trx(value):
-    if value in ["Addition", "Initial Load", "Purchase", "Removal"]:  # TODO really?
+    if value in ["Addition", "Initial Load", "Purchase", "Removal"]:
         return value
     else:
         raise ValidationError("Not a valid credit trx type.")
 
 
 def validate_rating_value(value):
-    if value in range(1, 6):
-        return value
-    else:
-        raise ValidationError("Rating value not between 1 and 5.")
+    return value
+    # if value in range(1, 6) or value is None:
+    #     return value
+    # else:
+    #     raise ValidationError("Rating value not between 1 and 5.")
 
 
 class Country(models.Model):
@@ -85,8 +86,6 @@ class Record(models.Model):
         RecordFormat, on_delete=models.CASCADE, related_name="records"
     )
     color = models.CharField(max_length=255, blank=True)
-    lim_edition = models.CharField(max_length=50, blank=True)
-    number = models.CharField(max_length=50, blank=True)
     remarks = models.CharField(max_length=255, blank=True)
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE, related_name="records")
     artists = models.ManyToManyField(Artist, related_name="records")
@@ -95,32 +94,37 @@ class Record(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     is_digitized = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    rating = models.SmallIntegerField(validators=[validate_rating_value], null=True)
+    credit_value = models.IntegerField(choices=[(1, 1), (0, 0)], default=1)
+    rating = models.SmallIntegerField(
+        validators=[validate_rating_value], null=True, default=None
+    )
     review = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # TODO uniqueconstraint cannot take m2m fields ...
-    # class Meta:
-    #     constraints = [
-    #         models.UniqueConstraint(fields=["title", "artists"], name="record_unique")
-    #     ]
+    # NOTE: I cannot use m2m fields in the constraint, so this ist the best I can do ...
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["title", "year", "genre"], name="record_unique"
+            )
+        ]
 
     def __str__(self):
-        return f"{self.title} ({self.artists})"
+        return f"{self.title} ({str(self.year)})"
 
 
-class CreditTrx(models.Model):
+class TrxCredit(models.Model):
     # id = models.AutoField(primary_key=True)
     trx_date = models.DateField()
     trx_type = models.CharField(max_length=50, validators=[validate_credit_trx])
-    credit_value = models.SmallIntegerField()
+    trx_value = models.SmallIntegerField()
     credit_saldo = models.SmallIntegerField()
     record = models.ForeignKey(
-        Record, on_delete=models.CASCADE, related_name="credit_trx"
+        Record, on_delete=models.CASCADE, related_name="credit_trx", null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __repr__(self):
-        return f"{self.trx_type} (value={self.credit_value})"
+        return f"{self.trx_type} (value={self.trx_value})"
