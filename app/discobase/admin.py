@@ -3,7 +3,7 @@ from django.contrib import admin
 from discobase.models import (
     Artist,
     Country,
-    CreditTrx,
+    TrxCredit,
     Genre,
     Label,
     Record,
@@ -20,8 +20,14 @@ class RecordAdmin(admin.ModelAdmin):
         "title",
         "purchase_date",
         "is_active",
-    )  # TODO: show many to many fields, maybe like this:
+    )
+
+    # TODO: show many to many fields, maybe like this:
     # C:\Users\r2d4\OneDrive\code\projects\22-05_django_books\books\admin.py
+    # or read the docs, see nimbus section for link
+
+    # fields = []  # to change the order
+    # fieldsets = [('SECTION X', {'fields':['artist', 'xy']}),]
     list_display_links = ("id", "title")
     list_filter = ("genre",)  # TODO how to filter on artist or label ...
     list_editable = ("purchase_date",)  # more for demo purposes ...
@@ -36,4 +42,4 @@ class RecordAdmin(admin.ModelAdmin):
 admin.site.register(Record, RecordAdmin)
 
 # TODO ...
-admin.site.register([Artist, Country, CreditTrx, Genre, Label, RecordFormat])
+admin.site.register([Artist, Country, TrxCredit, Genre, Label, RecordFormat])
