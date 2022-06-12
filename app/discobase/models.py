@@ -21,6 +21,7 @@ def validate_rating_value(value):
 
 class Country(models.Model):
     country_name = models.CharField(max_length=50, unique=True)
+    country_code = models.CharField(max_length=2, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -111,7 +112,12 @@ class Record(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.title} ({str(self.year)})"
+        return f"{self.artists_str} - {self.title} ({str(self.year)})"
+
+    @property
+    def artists_str(self):
+        """NOTE: This probably needs an additional db query, when called."""
+        return " / ".join([x.artist_name for x in self.artists.all()])
 
 
 class TrxCredit(models.Model):

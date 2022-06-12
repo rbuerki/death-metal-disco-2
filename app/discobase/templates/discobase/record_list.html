@@ -5,7 +5,7 @@
 <h1>Record List</h1>
 <ul>
     {% for record in record_list %}
-        <li>{{record.title}} {{record.year}}  {{record.purchase_date}} </li>
+        <li>{{record.artists_str}} - {{record.title}} {{record.year}}  {{record.purchase_date}} </li>
     {% endfor %}
 </ul>
 
