@@ -1,27 +1,93 @@
+from datetime import date, timedelta
+
 from django.test import TestCase
 
-from discobase.models import Record
+from discobase.models import (
+    Artist,
+    Country,
+    Genre,
+    Label,
+    Record,
+    RecordFormat,
+    TrxCredit,
+)
+from discobase import views
 
-# class BookTests(TestCase):
-#     @classmethod
-#     def setUpTestData(cls):
-#         cls.book = Book.objects.create(
-#             title="Harry Potter",
-#             author="JK Rowling",
-#             price="25.00",
-#         )
 
-#         cls.user = get_user_model().objects.create_user(
-#             username="reviewuser",
-#             email="reviewuser@example.com",
-#             password="testpass123",
-#         )
+class DiscobaseModelTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.country = Country.objects.create(
+            country_name="Switzerland",
+            country_code="CH",
+        )
 
-#         cls.review = Review.objects.create(
-#             book=cls.book,
-#             author=cls.user,
-#             review="An excellent review.",
-#         )
+        cls.artist = Artist.objects.create(
+            artist_name="Raphmadon",
+            country=cls.country,
+        )
+
+        cls.genre = Genre.objects.create(
+            genre_name="Metal of Death",
+        )
+
+        cls.label = Label.objects.create(
+            label_name="Capsized Duck Records",
+        )
+
+        cls.record_format = RecordFormat.objects.create(
+            format_name="LP",
+        )
+
+        cls.addition_trx = TrxCredit.objects.create(
+            trx_date=date.today() - timedelta(days=22),
+            trx_type="Addition",
+            trx_value=1,
+            credit_saldo=1,
+            record=None,
+        )
+
+        cls.record = Record.objects.create(
+            title="Album of Blood",
+            year="2022",
+            record_format=cls.record_format,
+            color="vomit green",
+            remarks="limited: 222",
+            genre=cls.genre,
+            purchase_date="1999-01-01",
+            price=20,
+        )
+        cls.record.artists.set([cls.artist])
+        cls.record.labels.set([cls.label])
+
+    def test_objecs_are_created(self):
+        """Objects are created with expected relations, including the
+        purchase transaction for the inserted record.
+        """
+        r1 = Record.objects.get(genre__genre_name="Metal of Death")
+        r2 = Record.objects.get(record_format__format_name="LP")
+        r3 = Record.objects.get(artists__country__country_code="CH")
+        r4 = Record.objects.get(labels__label_name="Capsized Duck Records")
+        r5 = Record.objects.get(trx_credit__trx_type="Purchase")
+        trx_add = TrxCredit.objects.get(trx_type="Addition")
+        trx_pur = TrxCredit.objects.get(trx_type="Purchase")
+        self.assertTrue(r1 == r2 == r3 == r4 == r5)
+        self.assertEqual(trx_add.trx_date, date.today() - timedelta(days=22))
+        self.assertEqual(trx_pur.trx_date, date(1999, 1, 1))
+        self.assertEqual(trx_pur.credit_saldo, 0)
+
+    def test_create_addition_credits(self):
+        """Addition credits are properly created based
+        on the existing trx in the database.
+        """
+        views.create_addition_credits(TrxCredit)
+        t1 = TrxCredit.objects.filter(trx_type="Addition").count()
+        t2 = TrxCredit.objects.order_by("-id").first().credit_saldo
+        t3 = TrxCredit.objects.filter(id=3).get().trx_date
+        self.assertEqual(t1, 3)
+        self.assertEqual(t2, 2)
+        self.assertEqual(t3, date.today() - timedelta(days=12))
+
 
 #     def test_book_listing(self):
 #         self.assertEqual(f"{self.book.title}", "Harry Potter")

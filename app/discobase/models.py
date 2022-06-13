@@ -127,7 +127,7 @@ class TrxCredit(models.Model):
     trx_value = models.SmallIntegerField()
     credit_saldo = models.SmallIntegerField()
     record = models.ForeignKey(
-        Record, on_delete=models.CASCADE, related_name="credit_trx", null=True
+        Record, on_delete=models.CASCADE, related_name="trx_credit", null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
