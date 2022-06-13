@@ -12,6 +12,7 @@ def validate_credit_trx(value):
 
 
 def validate_rating_value(value):
+    # TODO: the validation makes this field required somehow
     return value
     # if value in range(1, 6) or value is None:
     #     return value
@@ -119,6 +120,11 @@ class Record(models.Model):
         """NOTE: This probably needs an additional db query, when called."""
         return " / ".join([x.artist_name for x in self.artists.all()])
 
+    @property
+    def labels_str(self):
+        """NOTE: This probably needs an additional db query, when called."""
+        return " / ".join([x.label_name for x in self.labels.all()])
+
 
 class TrxCredit(models.Model):
     # id = models.AutoField(primary_key=True)
@@ -127,10 +133,29 @@ class TrxCredit(models.Model):
     trx_value = models.SmallIntegerField()
     credit_saldo = models.SmallIntegerField()
     record = models.ForeignKey(
-        Record, on_delete=models.CASCADE, related_name="trx_credit", null=True
+        Record, on_delete=models.SET_NULL, related_name="trx_credit", null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __repr__(self):
         return f"{self.trx_type} (value={self.trx_value})"
+
+
+class Dump(models.Model):
+    # id = models.AutoField(primary_key=True)
+    legacy_id = models.SmallIntegerField()
+    title = models.CharField(max_length=255)
+    year = models.SmallIntegerField()
+    record_format = models.CharField(max_length=50)
+    color = models.CharField(max_length=255, blank=True)
+    remarks = models.CharField(max_length=255, blank=True)
+    genre = models.CharField(max_length=50)
+    artists = models.CharField(max_length=255)
+    labels = models.CharField(max_length=255)
+    purchase_date = models.DateField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    rating = models.SmallIntegerField(null=True)
+    review = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

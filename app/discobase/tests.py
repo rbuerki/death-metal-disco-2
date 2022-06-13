@@ -5,6 +5,7 @@ from django.test import TestCase
 from discobase.models import (
     Artist,
     Country,
+    Dump,
     Genre,
     Label,
     Record,
@@ -88,6 +89,24 @@ class DiscobaseModelTests(TestCase):
         self.assertEqual(t2, 2)
         self.assertEqual(t3, date.today() - timedelta(days=12))
 
+    def test_record_removal(self):
+        """Shallow copies of records are sent to the dump
+        pre-delete and a removal trx is added post-delete.
+        """
+        r = Record.objects.first()
+        r.delete()
+        t1 = Dump.objects.order_by("-id").first().title
+        t2 = TrxCredit.objects.order_by("-id").first()
+        t3 = Record.objects.filter(id=r.id).first()
+        trx_pur = TrxCredit.objects.get(trx_type="Purchase")
+        self.assertEqual(t1, r.title)
+        self.assertEqual(t2.trx_type, "Removal")
+        self.assertEqual(t2.trx_value, 1)
+        self.assertEqual(t3, None)
+        self.assertEqual(trx_pur.record, None)
+
+
+# VIEWS
 
 #     def test_book_listing(self):
 #         self.assertEqual(f"{self.book.title}", "Harry Potter")
