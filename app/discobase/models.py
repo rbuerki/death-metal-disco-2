@@ -85,11 +85,13 @@ class Record(models.Model):
     title = models.CharField(max_length=255)
     year = models.SmallIntegerField(default=datetime.now().year)
     record_format = models.ForeignKey(
-        RecordFormat, on_delete=models.CASCADE, related_name="records"
+        RecordFormat, on_delete=models.CASCADE, related_name="records", default=3
     )
     color = models.CharField(max_length=255, blank=True)
     remarks = models.CharField(max_length=255, blank=True)
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, related_name="records")
+    genre = models.ForeignKey(
+        Genre, on_delete=models.CASCADE, related_name="records", default=1
+    )
     artists = models.ManyToManyField(Artist, related_name="records")
     labels = models.ManyToManyField(Label, related_name="records")
     purchase_date = models.DateField()
