@@ -35,8 +35,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Local
-    "users.apps.UsersConfig",
     "discobase.apps.DiscobaseConfig",
+    "pages.apps.PagesConfig",
+    "users.apps.UsersConfig",
 ]
 
 MIDDLEWARE = [

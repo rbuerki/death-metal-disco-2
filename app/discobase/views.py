@@ -1,8 +1,9 @@
 from datetime import date, timedelta
 
+from django.http import HttpResponse
 from django.db.models.signals import post_delete, post_save, pre_delete
 from django.dispatch import receiver
-from django.views.generic import ListView
+from django.views.generic import ListView, View
 
 from discobase.models import Dump, Record, TrxCredit
 
@@ -17,6 +18,13 @@ class TrxCreditListView(ListView):
     model = TrxCredit
     contect_object_name = "trxcredit_list"
     queryset = TrxCredit.objects.order_by("-trx_date")
+
+
+# TODO integrate credit_addition_trx
+# class TrxCreditView(View):
+#     def get(self, request):
+#         # <view logic>
+#         return HttpResponse('result')
 
 
 # CREATE PURCHASE TRX ON RECORD INSERT
