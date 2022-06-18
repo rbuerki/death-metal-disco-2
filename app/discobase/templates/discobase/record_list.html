@@ -6,7 +6,7 @@
 <h1>Record List</h1>
 {% for record in record_list %}
     <div> 
-        <h4><a href="{{ recrod.get_absolute_url }}">{{ record.title }}</a></h4>
+        <h4><a href="{{ record.get_absolute_url }}">{{ record.title }}</a></h4>
         <p>{{record.artists_str}} - {{record.year}} - {{record.purchase_date}}</p>
     </div>
 {% endfor %}

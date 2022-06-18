@@ -116,7 +116,7 @@ class Record(models.Model):
         return f"{self.artists_str} - {self.title} ({str(self.year)})"
 
     def get_absolute_url(self):
-        return reverse("book_detail", args=[str(self.pk)])
+        return reverse("discobase:record_detail", args=[str(self.pk)])
 
     @property
     def artists_str(self):
