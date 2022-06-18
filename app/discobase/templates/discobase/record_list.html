@@ -3,13 +3,12 @@
 {% block title %}Record List{% endblock title %}
 
 {% block content %}
-
 <h1>Record List</h1>
-<ul>
-    {% for record in record_list %}
-        <li>{{record.artists_str}} - {{record.title}} {{record.year}}  {{record.purchase_date}} </li>
-    {% endfor %}
-</ul>
-
+{% for record in record_list %}
+    <div> 
+        <h4><a href="{{ recrod.get_absolute_url }}">{{ record.title }}</a></h4>
+        <p>{{record.artists_str}} - {{record.year}} - {{record.purchase_date}}</p>
+    </div>
+{% endfor %}
 {% endblock content %}
     

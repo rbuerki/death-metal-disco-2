@@ -106,6 +106,7 @@ class DiscobaseModelTests(TestCase):
         self.assertEqual(trx_pur.record, None)
 
 
+# TODO see also dj-books p. 187
 # class RecordListTests(TestCase):
 #     q = "Cannabis Corpse"
 

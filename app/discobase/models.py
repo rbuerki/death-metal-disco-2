@@ -1,7 +1,9 @@
 from datetime import datetime
 
-from django.db import models
+
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.urls import reverse
 
 
 def validate_credit_trx(value):
@@ -116,6 +118,9 @@ class Record(models.Model):
 
     def __str__(self):
         return f"{self.artists_str} - {self.title} ({str(self.year)})"
+
+    def get_absolute_url(self):
+        return reverse("book_detail", args=[str(self.pk)])
 
     @property
     def artists_str(self):

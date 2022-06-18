@@ -4,14 +4,14 @@ from django.http import HttpResponse
 from django.db.models import Q
 from django.db.models.signals import post_delete, post_save, pre_delete
 from django.dispatch import receiver
-from django.views.generic import ListView, View
+from django.views.generic import DetailView, ListView, View
 
 from discobase.models import Dump, Record, TrxCredit
 
 
 class RecordListView(ListView):
     model = Record
-    contect_object_name = "record_list"
+    context_object_name = "record_list"
 
     def get_queryset(self):
         """Override default queryset by filtering for the
@@ -34,8 +34,13 @@ class RecordListView(ListView):
 
 class TrxCreditListView(ListView):
     model = TrxCredit
-    contect_object_name = "trxcredit_list"
+    context_object_name = "trxcredit_list"
     queryset = TrxCredit.objects.order_by("-trx_date")
+
+
+class RecordDetailView(DetailView):
+    model = Record
+    context_object_name = "record"
 
 
 # TODO integrate credit_addition_trx

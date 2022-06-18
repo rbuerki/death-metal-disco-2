@@ -4,6 +4,19 @@ from discobase import views
 app_name = "discobase"
 
 urlpatterns = [
-    path("list_record/", views.RecordListView.as_view(), name="list_record"),
-    path("list_trxcredit/", views.TrxCreditListView.as_view(), name="list_trxcredit"),
+    path(
+        "record_list/",
+        views.RecordListView.as_view(),
+        name="record_list",
+    ),
+    path(
+        "trxcredit_list/",
+        views.TrxCreditListView.as_view(),
+        name="trxcredit_list",
+    ),
+    path(
+        "<int:pk>/",
+        views.RecordDetailView.as_view(),
+        name="record_detail",
+    ),
 ]

@@ -26,10 +26,10 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'discobase:list_record' %}">Record List</a>
+                        <a class="nav-link" href="{% url 'discobase:record_list' %}">Record List</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'discobase:list_trxcredit' %}">Trx-Credits List</a>
+                        <a class="nav-link" href="{% url 'discobase:trxcredit_list' %}">Trx-Credits List</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'about' %}">About</a>
@@ -48,7 +48,7 @@
                     {% endif %}
                 </ul>
                 <!-- Search django-book p.222-->
-                <form class="d-flex" action="{% url 'discobase:list_record' %}" method="GET">
+                <form class="d-flex" action="{% url 'discobase:record_list' %}" method="GET">
                     <input class="form-control me-2" type="search" name="q" placeholder="Record Search" aria-label="Record Search">
                     <button class="btn btn-outline-success" type=submit">Search</button>
                 </form>

@@ -1,0 +1,12 @@
+{% extends "_base.html" %}
+
+{% block title %}{{record.title}}{% endblock title %}
+
+{% block content %}
+<div class="record_detail">
+    <h2><a href="">{{record.title}}</a></h2>
+    <p>Artist(s): {{ record.artists_str}}</p>
+    <p>Label(s): {{ record.labels_str}}</p>
+</div>
+{% endblock content %}
+    

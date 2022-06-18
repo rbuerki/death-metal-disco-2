@@ -3,12 +3,10 @@
 {% block title %}Trx-Credit List{% endblock title %}
 
 {% block content %}
-
 <h1>Trx-Credit List</h1>
 <ul>
     {% for trx in trxcredit_list %}
         <li>{{trx.trx_date}} - {{trx.trx_type}} {{trx.trx_value}} {{trx.credit_saldo}}  {{trx.record_id}} </li>
     {% endfor %}
 </ul>
-
 {% endblock content %}
