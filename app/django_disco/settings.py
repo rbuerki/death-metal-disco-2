@@ -34,6 +34,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third-party
+    "crispy_forms",
+    "crispy_bootstrap5",
     # Local
     "discobase.apps.DiscobaseConfig",
     "pages.apps.PagesConfig",
@@ -125,8 +128,15 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 # TODO this is not suitable for deployment run collectstatic django book 113
 
+
 # My customizing of user management
 
 AUTH_USER_MODEL = "users.CustomUser"
 LOGIN_REDIRECT_URL = "home"  # default is accounts/profile
 LOGOUT_REDIRECT_URL = "home"  # default is a logout page
+
+
+# django-crispy-forms 
+ 
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
