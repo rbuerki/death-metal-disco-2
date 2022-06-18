@@ -19,7 +19,7 @@ class RecordAdmin(admin.ModelAdmin):
         "id",
         "title",
         "purchase_date",
-        "is_active",
+        "is_digitized",
     )
 
     # TODO: show many to many fields, maybe like this:
@@ -33,8 +33,8 @@ class RecordAdmin(admin.ModelAdmin):
     list_editable = ("purchase_date",)  # more for demo purposes ...
     search_fields = (
         "title",
-        "genre",
-        "record_format",
+        # "genre",  -- TODO throwing errors, cannot query in the pk ;-)
+        # "record_format",
     )
     list_per_page = 30
 

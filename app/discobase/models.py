@@ -14,12 +14,10 @@ def validate_credit_trx(value):
 
 
 def validate_rating_value(value):
-    # TODO: the validation makes this field required somehow
-    return value
-    # if value in range(1, 6) or value is None:
-    #     return value
-    # else:
-    #     raise ValidationError("Rating value not between 1 and 5.")
+    if value in range(0, 6) or value is None:
+        return value
+    else:
+        raise ValidationError("Rating value not between 0 and 5.")
 
 
 class Country(models.Model):
@@ -99,11 +97,9 @@ class Record(models.Model):
     purchase_date = models.DateField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
     is_digitized = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
     credit_value = models.IntegerField(choices=[(1, 1), (0, 0)], default=1)
-    rating = models.SmallIntegerField(
-        validators=[validate_rating_value], null=True, default=None
-    )
+    rating = models.SmallIntegerField(validators=[validate_rating_value], default=0)
+    favourite_song = models.CharField(max_length=255, blank=True)
     review = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
