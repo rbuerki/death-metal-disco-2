@@ -47,6 +47,11 @@
                         </li>
                     {% endif %}
                 </ul>
+                <!-- Search django-book p.222-->
+                <form class="d-flex" action="{% url 'discobase:list_record' %}" method="GET">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Record Search" aria-label="Record Search">
+                    <button class="btn btn-outline-success" type=submit">Search</button>
+                </form>
             </div>
         </div>
     </nav>

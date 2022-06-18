@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 
 from django.http import HttpResponse
+from django.db.models import Q
 from django.db.models.signals import post_delete, post_save, pre_delete
 from django.dispatch import receiver
 from django.views.generic import ListView, View
@@ -11,7 +12,24 @@ from discobase.models import Dump, Record, TrxCredit
 class RecordListView(ListView):
     model = Record
     contect_object_name = "record_list"
-    queryset = Record.objects.filter(is_active="True")
+
+    def get_queryset(self):
+        """Override default queryset by filtering for the
+        input from the navbar search window. If there is none
+        return all recors.
+        NOTE: This might slow down the base list page. Maybe I
+        should make a separate RecordSearchListView.
+        """
+        query = self.request.GET.get("q")
+        if not query:
+            return Record.objects.all()
+        else:
+            return Record.objects.filter(
+                Q(title__icontains=query)
+                | Q(artists__artist_name__icontains=query)
+                | Q(labels__label_name__icontains=query)
+                | Q(record_format__format_name=query)
+            )
 
 
 class TrxCreditListView(ListView):
