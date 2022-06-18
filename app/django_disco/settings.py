@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     # Third-party
     "crispy_forms",
     "crispy_bootstrap5",
+    "allauth",
+    "allauth.account",
     # Local
     "discobase.apps.DiscobaseConfig",
     "pages.apps.PagesConfig",
@@ -132,11 +134,25 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # My customizing of user management
 
 AUTH_USER_MODEL = "users.CustomUser"
-LOGIN_REDIRECT_URL = "home"  # default is accounts/profile
-LOGOUT_REDIRECT_URL = "home"  # default is a logout page
 
+# django-crispy-forms
 
-# django-crispy-forms 
- 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+# django-allauth config
+LOGIN_REDIRECT_URL = "home"  # default is accounts/profile - this is not allauth
+ACCOUNT_LOGOUT_REDIRECT_URL = "home"  # default is a logout page - this is allauth
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"  # TODO for dev only
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
