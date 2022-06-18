@@ -4,9 +4,26 @@
 
 {% block content %}
 <div class="record_detail">
-    <h2><a href="">{{record.title}}</a></h2>
-    <p>Artist(s): {{ record.artists_str}}</p>
-    <p>Label(s): {{ record.labels_str}}</p>
+    <p> </p>
+    <h5>Artist(s): {{ record.artists_str }}</h5>
+    <h5>Title: {{record.title}}</h5>
+    <p>---</p>
+    <p>Genre: {{ record.genre.genre_name }}</p>
+    <p>Label(s): {{ record.labels_str }}</p>
+    <p>---</p>
+    <p>Format: {{ record.record_format.format_name }}</p>
+    <p>Color: {{ record.color }}</p>
+    <p>Remarks: {{ record.remarks }}</p>
+    <p>---</p>
+    <p>Purchase Date: {{ record.purchase_date }}</p>
+    <p>Price: {{record.price}} </p>
+    <p>---</p>
+    <p>Rating: {{ record.rating }}</p>
+    <p>Favourite Song: {{ record.favourite_song }}</p>
+    <p>Review: {{ record.review }}</p>
+    <p>---</p>
+    <p>Digi Status: {{ record.is_digitized }}</p>
+    <p>Credit Value: {{ record.credit_value }}</p>
 </div>
 {% endblock content %}
     
