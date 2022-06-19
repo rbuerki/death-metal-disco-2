@@ -10,13 +10,18 @@ urlpatterns = [
         name="record_list",
     ),
     path(
+        "<int:pk>/",
+        views.RecordDetailView.as_view(),
+        name="record_detail",
+    ),
+    path(
         "trxcredit_list/",
         views.TrxCreditListView.as_view(),
         name="trxcredit_list",
     ),
     path(
-        "<int:pk>/",
-        views.RecordDetailView.as_view(),
-        name="record_detail",
+        "trxcredit_chart/",
+        views.trxcredit_chart,
+        name="trxcredit_chart",
     ),
 ]

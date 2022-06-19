@@ -16,20 +16,22 @@ dependencies:
   - ipywidgets
   - jupytext
   # SQL
-  - psycopg2  
+  - psycopg2
   - ipython-sql
   # DATA RELATED
   - numpy
   - pandas
   - pyarrow
   - pillow
+  # CHARTS
+  - plotly
 
   - pip:
-    - rich
-    - xlsxwriter
-    # DJANGO & WEB
-    - Django==4.0.4
-    - django-allauth
-    - django-crispy-forms
-    - crispy-bootstrap5
-    - environs[django]
+      - rich
+      - xlsxwriter
+      # DJANGO & WEB
+      - Django==4.0.4
+      - django-allauth
+      - django-crispy-forms
+      - crispy-bootstrap5
+      - environs[django]

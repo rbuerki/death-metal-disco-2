@@ -1,0 +1,12 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Credit Trx History{% endblock title %}
+
+{% block content %}
+{{ chart|safe }}
+<form method="GET" action="{% url 'discobase:trxcredit_chart' %}">
+    {{ form|crispy }}
+    <button class="btn btn-success" type="submit">Log In</button>
+</form>
+{% endblock content %}

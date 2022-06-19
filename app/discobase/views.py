@@ -4,8 +4,11 @@ from django.http import HttpResponse
 from django.db.models import Q
 from django.db.models.signals import post_delete, post_save, pre_delete
 from django.dispatch import receiver
+from django.shortcuts import render
 from django.views.generic import DetailView, ListView, View
 
+from discobase.charts import make_trxcredit_chart
+from discobase.forms import DateForm
 from discobase.models import Dump, Record, TrxCredit
 
 
@@ -48,6 +51,31 @@ class RecordDetailView(DetailView):
 #     def get(self, request):
 #         # <view logic>
 #         return HttpResponse('result')
+
+
+# DISPLAY CHARTS
+
+
+def trxcredit_chart(request):
+    """Display the credittrx_chart. Start- and end date
+    can be adapted by the user (using the DateForm).
+    """
+    trx = (
+        TrxCredit.objects.exclude(trx_type="Initial Load")
+        .filter(trx_date__year__gte="2021")
+        .order_by("trx_date", "trx_type")
+    )
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+
+    if start_date:
+        trx = trx.filter(trx_date__gte=start_date)
+    if end_date:
+        trx = trx.filter(trx_date__lte=end_date)
+
+    chart = make_trxcredit_chart(trx)
+    context = {"chart": chart, "form": DateForm}
+    return render(request, "discobase/chart.html", context)
 
 
 # CREATE PURCHASE TRX ON RECORD INSERT
