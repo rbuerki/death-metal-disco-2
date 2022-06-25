@@ -7,8 +7,6 @@ pio.templates.default = "simple_white"
 def make_trxcredit_chart(trx):
     min_date = trx.order_by("trx_date").first().trx_date
     max_date = trx.order_by("trx_date").last().trx_date
-    print(max_date)
-    print(min_date)
     color_dict = {"Addition": "green", "Removal": "red", "Purchase": "blue"}
 
     fig = go.Figure(

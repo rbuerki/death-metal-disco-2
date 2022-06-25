@@ -3,6 +3,7 @@ from django.contrib import admin
 from discobase.models import (
     Artist,
     Country,
+    Dump,
     TrxCredit,
     Genre,
     Label,
@@ -42,4 +43,4 @@ class RecordAdmin(admin.ModelAdmin):
 admin.site.register(Record, RecordAdmin)
 
 # TODO ...
-admin.site.register([Artist, Country, TrxCredit, Genre, Label, RecordFormat])
+admin.site.register([Artist, Country, Dump, Genre, Label, RecordFormat, TrxCredit])

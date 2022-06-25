@@ -1,7 +1,10 @@
 from datetime import date, timedelta
 
 from django.test import TestCase
+from django.urls import resolve, reverse
 
+from discobase import views
+from discobase.forms import DateForm
 from discobase.models import (
     Artist,
     Country,
@@ -12,7 +15,6 @@ from discobase.models import (
     RecordFormat,
     TrxCredit,
 )
-from discobase import views
 
 
 class DiscobaseModelTests(TestCase):
@@ -107,48 +109,40 @@ class DiscobaseModelTests(TestCase):
 
 
 # TODO see also dj-books p. 187
-# class RecordListTests(TestCase):
-#     q = "Cannabis Corpse"
+class DiscobaseViewTests(TestCase):
+    fixtures = [
+        "discobase_testdata.json",
+    ]
+    record = Record.objects.first()
 
-#     def setUp(self):
-#         url = reverse("signup")
-#         self.response = self.client.get(url)
+    def test_record_list_view(self):
+        response = self.client.get(reverse("discobase:record_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Pieces")
+        self.assertTemplateUsed("discobase/record_list.html")
 
-#     def test_signup_template(self):
-#         self.assertEqual(self.response.status_code, 200)
-#         self.assertTemplateUsed(self.response, "registration/signup.html")
-#         self.assertContains(self.response, "Sign Up")
-#         self.assertNotContains(self.response, "Wrong text")
+    def test_record_detail_view(self):
+        response = self.client.get(self.record.get_absolute_url())
+        no_response = self.client.get("discobase/records/888888")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(no_response.status_code, 404)
+        self.assertContains(response, "Dismember")
+        self.assertTemplateUsed("discobase/recod_detail.html")
 
-#     def test_signup_form(self):
-#         _ = get_user_model().objects.create_user(self.username, self.email)
-#         self.assertEqual(get_user_model().objects.all().count(), 1)
-#         self.assertEqual(get_user_model().objects.all()[0].username, self.username)
-#         self.assertEqual(get_user_model().objects.all()[0].email, self.email)
+    def test_trxrecord_list_view(self):
+        response = self.client.get(reverse("discobase:trxcredit_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Initial Load")
+        self.assertTemplateUsed("discobase/trxcredit_list.html")
 
-#     def test_signup_view(self):
-#         view = resolve("/accounts/signup/")
-#         self.assertEqual(view.func.__name__, SignUpPageView.as_view().__name__)
+    def test_trxrecord_chart_view(self):
+        response = self.client.get(reverse("discobase:trxcredit_chart"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Credit Saldo Movement")
+        self.assertTemplateUsed("discobase/trxcredit_chart.html")
 
-
-# VIEWS
-
-#     def test_book_listing(self):
-#         self.assertEqual(f"{self.book.title}", "Harry Potter")
-#         self.assertEqual(f"{self.book.author}", "JK Rowling")
-#         self.assertEqual(f"{self.book.price}", "25.00")
-
-#     def test_book_list_view(self):
-#         response = self.client.get(reverse("book_list"))
-#         self.assertEqual(response.status_code, 200)
-#         self.assertContains(response, "Harry Potter")
-#         self.assertTemplateUsed(response, "books/book_list.html")
-
-#     def test_book_detail_view(self):
-#         response = self.client.get(self.book.get_absolute_url())
-#         no_response = self.client.get("/books/12345/")
-#         self.assertEqual(response.status_code, 200)
-#         self.assertEqual(no_response.status_code, 404)
-#         self.assertContains(response, "Harry Potter")
-#         self.assertContains(response, "An excellent review.")
-#         self.assertTemplateUsed(response, "books/book_detail.html")
+    def test_trxrecord_chart_form(self):
+        form = DateForm()
+        self.assertIn("start_date", form.fields)
+        self.assertIn("end_date", form.fields)
+        # TODO add more ...
