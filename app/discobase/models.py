@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.forms import ImageField
 from django.urls import reverse
 
 
@@ -100,6 +101,7 @@ class Record(models.Model):
     rating = models.SmallIntegerField(validators=[validate_rating_value], default=0)
     favourite_song = models.CharField(max_length=255, blank=True)
     review = models.TextField(blank=True)
+    cover = models.ImageField(upload_to="covers/", default="covers/_placeholder.png")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

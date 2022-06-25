@@ -131,6 +131,12 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # TODO this is not suitable for deployment run collectstatic django book 113
 
 
+# Media files
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+
 # My customizing of user management
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -142,6 +148,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 
 # django-allauth config
+
 LOGIN_REDIRECT_URL = "home"  # default is accounts/profile - this is not allauth
 ACCOUNT_LOGOUT_REDIRECT_URL = "home"  # default is a logout page - this is allauth
 SITE_ID = 1
@@ -157,5 +164,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 
+
+# fixtures (folders beside fixtures folder in the individual apps)
 
 FIXTURE_DIRS = [BASE_DIR / "fixtures"]
