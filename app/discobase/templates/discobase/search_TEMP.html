@@ -1,0 +1,21 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Test Search Form{% endblock title %}
+
+{% block content %}
+<form method="GET" action="{% url 'discobase:record_list' %}">
+    {{ form|crispy }}
+    <button class="btn btn-success" type="submit">Filter</button>
+</form>
+<div class="col-md-4 mb-3">
+    <label class="sr-only">State</label>
+    <select name="state" class="form-control">
+      <option selected="true" disabled="disabled">Record Format (All)</option>
+      {% for key, value in format_choices %}
+        <option value="{{ key }}">{{ value }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+{% endblock content %}

@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.views.generic import DetailView, ListView, View
 
 from discobase.charts import make_trxcredit_chart
-from discobase.forms import DateForm
+from discobase.forms import DateForm, SearchForm
 from discobase.models import Dump, Record, TrxCredit
 
 
@@ -52,6 +52,13 @@ class RecordDetailView(DetailView):
 #     def get(self, request):
 #         # <view logic>
 #         return HttpResponse('result')
+
+
+# TODO for testing only
+def search_TEMP(request):
+    from discobase.choices import format_choices
+    context = {"form": SearchForm, "format_choices": format_choices}
+    return render(request, "discobase/search_TEMP.html", context)
 
 
 # DISPLAY CHARTS

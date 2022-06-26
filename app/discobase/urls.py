@@ -24,4 +24,9 @@ urlpatterns = [
         views.trxcredit_chart,
         name="trxcredit_chart",
     ),
+    path(
+        "search_TEMP/",
+        views.search_TEMP,
+        name="search_TEMP",
+    ),
 ]
