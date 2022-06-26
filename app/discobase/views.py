@@ -15,6 +15,7 @@ from discobase.models import Dump, Record, TrxCredit
 class RecordListView(ListView):
     model = Record
     context_object_name = "record_list"
+    paginate_by = 50
 
     def get_queryset(self):
         """Override default queryset by filtering for the
