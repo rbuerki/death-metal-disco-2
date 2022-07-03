@@ -18,6 +18,8 @@ from discobase.models import (
 
 
 class DiscobaseModelTests(TestCase):
+    """These tests don't use the fixture."""
+
     @classmethod
     def setUpTestData(cls):
         cls.country = Country.objects.create(
@@ -110,6 +112,8 @@ class DiscobaseModelTests(TestCase):
 
 # TODO see also dj-books p. 187
 class DiscobaseViewTests(TestCase):
+    """These tests use a fixture."""
+
     fixtures = [
         "discobase_testdata.json",
     ]

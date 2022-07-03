@@ -42,5 +42,23 @@ class RecordAdmin(admin.ModelAdmin):
 
 admin.site.register(Record, RecordAdmin)
 
+
+class TrxCreditAdmin(admin.ModelAdmin):
+    """Customize trx_credit list view in the admin panel."""
+
+    model = TrxCredit
+    list_display = (
+        "id",
+        "trx_date",
+        "trx_type",
+        "record",
+    )
+
+    list_per_page = 50
+
+
+admin.site.register(TrxCredit, TrxCreditAdmin)
+
+
 # TODO ...
-admin.site.register([Artist, Country, Dump, Genre, Label, RecordFormat, TrxCredit])
+admin.site.register([Artist, Country, Dump, Genre, Label, RecordFormat])

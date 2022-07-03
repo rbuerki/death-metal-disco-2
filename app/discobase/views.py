@@ -57,6 +57,7 @@ class RecordDetailView(DetailView):
 # TODO for testing only
 def search_TEMP(request):
     from discobase.choices import format_choices
+
     context = {"form": SearchForm, "format_choices": format_choices}
     return render(request, "discobase/search_TEMP.html", context)
 
@@ -68,6 +69,11 @@ def trxcredit_chart(request):
     """Display the credittrx_chart. Start- and end date
     can be adapted by the user (using the DateForm).
     """
+    # First, check if an addition trx has to be added
+    # TODO This is not very efficient, and if it stays here, then change
+    # the function to read from trx directly, so we hit the db only once
+    create_addition_credits(TrxCredit)
+
     trx = (
         TrxCredit.objects.exclude(trx_type="Initial Load")
         .filter(trx_date__year__gte="2021")
@@ -169,7 +175,7 @@ def get_days_since_last_addition(TrxCredit, interval_days) -> tuple[date, int]:
     return last_addition_date, days_since_last
 
 
-# SOFT DELETE RECORD AND CREATE REMOVAL TRX
+# DUMP RECORD AND CREATE REMOVAL TRX
 
 
 @receiver(pre_delete, sender=Record)
