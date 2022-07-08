@@ -71,7 +71,7 @@ print(f"Pandas {pd.__version__}")
 config_file_path = Path.cwd().parent.parent / "config.yaml"
 
 with open(config_file_path, "r") as f:
-    yaml_content = yaml.safe_load(f)b
+    yaml_content = yaml.safe_load(f)
 
 pg = yaml_content["POSTGRES"]
 pg_conn_str = f'postgresql://{pg["USER"]}:{pg["PASSWORD"]}@{pg["HOST"]}:{pg["PORT"]}/{pg["DATABASE"]}'
@@ -91,9 +91,12 @@ engine_pg
 # +
 query = """
     SELECT 
-        * 
-    FROM public.discobase_trxcredit 
-    WHERE trx_date >= (CURRENT_DATE -INTERVAL '6 MONTH')
+        tc.*
+    FROM 
+        public.discobase_trxcredit tc
+        -- LEFT JOIN public.discobase_record r ON r.Id = tc.record_id
+    WHERE tc.trx_date >= (CURRENT_DATE -INTERVAL '6 MONTH')
+    
 """
 
 trx_df_raw = pd.read_sql(query, engine_pg)
@@ -129,6 +132,8 @@ fig = go.Figure(
     data=go.Scatter(
         x=df_plot["trx_date"], 
         y=df_plot["credit_saldo"],
+        #         text = df_plot["trx_type"],
+
         mode="lines",
         line = {"color": "lightgray"},
         showlegend=False
@@ -158,11 +163,22 @@ for trx_type in df_plot["trx_type"].unique():
             mode = 'markers',
             marker = {"color": color_dict[trx_type]},
             name = trx_type,
-        #   legendgroup = d.name + ' threshold'
+            customdata = df_plot_type[["id", "record_id", "trx_type"]],
+            hovertemplate =
+                "%{x}<br>"+
+                'Saldo: %{y}<br>'+
+                'Trx Id: %{customdata[0]}<br>'+
+                'Record Id: %{customdata[1]}<br>'+
+                "<extra>%{customdata[2]}</extra>",
         )
     )
 # -
 
 fig.show()
+
+np.dstack((df_plot["id"], df_plot["record_id"], df_plot["trx_type"]))
+
+z1, z2, z3 = np.random.random((3, 7, 7))
+np.dstack((z1, z3))
 
 
