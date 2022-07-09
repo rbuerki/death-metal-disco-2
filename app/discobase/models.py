@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.forms import ImageField
+from django.forms import ImageField, IntegerField
 from django.urls import reverse
 
 
@@ -99,9 +99,14 @@ class Record(models.Model):
     is_digitized = models.BooleanField(default=False)
     credit_value = models.IntegerField(choices=[(1, 1), (0, 0)], default=1)
     rating = models.SmallIntegerField(validators=[validate_rating_value], default=0)
-    favourite_song = models.CharField(max_length=255, blank=True)
+    # favourite_song = models.CharField(
+    #     max_length=255, blank=True
+    # )  # TODO relate to tracklist with condition
     review = models.TextField(blank=True)
-    cover = models.ImageField(upload_to="covers/", default="covers/_placeholder.png")
+    cover_image = models.ImageField(
+        upload_to="covers/", default="covers/_placeholder.png"
+    )
+    discogs_id = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -119,6 +124,9 @@ class Record(models.Model):
     def get_absolute_url(self):
         return reverse("discobase:record_detail", args=[str(self.pk)])
 
+    # def set_cover_image_path(self): TODO fix or remove
+    #     return f"record_{self.pk}/{self.pk}_0"
+
     @property
     def artists_str(self):
         """NOTE: This probably needs an additional db query, when called."""
@@ -128,6 +136,24 @@ class Record(models.Model):
     def labels_str(self):
         """NOTE: This probably needs an additional db query, when called."""
         return " / ".join([x.label_name for x in self.labels.all()])
+
+
+class Song(models.Model):
+    # id = models.AutoField(primary_key=True)
+    record = models.ForeignKey(Record, on_delete=models.CASCADE, related_name="song")
+    position = models.CharField(max_length=4)
+    title = models.CharField(max_length=255)
+    is_favourite = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __repr__(self):
+        return f"{self.position} {self.title}"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["record", "title"], name="song_unique")
+        ]
 
 
 class TrxCredit(models.Model):

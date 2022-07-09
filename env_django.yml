@@ -35,3 +35,5 @@ dependencies:
       - django-crispy-forms
       - crispy-bootstrap5
       - environs[django]
+      - python3-discogs-client
+      - oauth2

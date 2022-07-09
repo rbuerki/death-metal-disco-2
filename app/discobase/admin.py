@@ -9,6 +9,7 @@ from discobase.models import (
     Label,
     Record,
     RecordFormat,
+    Song,
 )
 
 
@@ -61,4 +62,4 @@ admin.site.register(TrxCredit, TrxCreditAdmin)
 
 
 # TODO ...
-admin.site.register([Artist, Country, Dump, Genre, Label, RecordFormat])
+admin.site.register([Artist, Country, Dump, Genre, Label, RecordFormat, Song])

@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from django.test import TestCase
 from django.urls import resolve, reverse
 
+from discobase import discogs
 from discobase import views
 from discobase.forms import DateForm
 from discobase.models import (
@@ -150,3 +151,14 @@ class DiscobaseViewTests(TestCase):
         self.assertIn("start_date", form.fields)
         self.assertIn("end_date", form.fields)
         # TODO add more ...
+
+
+# TODO Discogs client is not compatible with Django test client
+# class DiscobaseDiscogsTests(TestCase):
+#     """These tests use a fixture."""
+
+#     fixtures = [
+#         "discobase_testdata.json",
+#     ]
+#     record = Record.objects.first()
+#     client = discogs.instantiate_discogs_client()

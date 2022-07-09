@@ -4,8 +4,8 @@
 
 {% block content %}
 <div class="record_detail">
-    {% if record.cover  %}
-        <img class="recordcover" src="{{ record.cover.url }}" alt="{{ record.title}}">
+    {% if record.cover_image  %}
+        <img class="recordcover" src="{{ record.cover_image.url }}" alt="{{ record.title}}">
     {% endif %}
         <p> </p>
     <h5>Artist(s): {{ record.artists_str }}</h5>
