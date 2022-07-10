@@ -1,6 +1,4 @@
 import requests
-import yaml
-from pathlib import Path
 from io import BytesIO
 
 from PIL import Image, UnidentifiedImageError
@@ -10,44 +8,34 @@ import discogs_client.models
 
 from discobase.models import Record, Song
 
-
-# Discogs authentication
-with open(Path.cwd().parent / "config.yaml", "r") as f:
-    yaml_content = yaml.safe_load(f)
-
-
-d_user_agent = yaml_content["DISCOGS"]["USER-AGENT"]
-d_consumer_key = yaml_content["DISCOGS"]["CONSUMER_KEY"]
-d_consumer_secret = yaml_content["DISCOGS"]["CONSUMER_SECRET"]
-d_oauth_token = yaml_content["DISCOGS"]["OAUTH_TOKEN"]
-d_oauth_token_secret = yaml_content["DISCOGS"]["OAUTH_TOKEN_SECRET"]
+from django.conf import settings
 
 
 def instantiate_discogs_client() -> discogs_client.Client:
     """Return an authenticated discogs client instance."""
     return discogs_client.Client(
-        d_user_agent,
-        consumer_key=d_consumer_key,
-        consumer_secret=d_consumer_secret,
-        token=d_oauth_token,
-        secret=d_oauth_token_secret,
+        settings.D_USER_AGENT,
+        consumer_key=settings.D_CONSUMER_KEY,
+        consumer_secret=settings.D_CONSUMER_SECRET,
+        token=settings.D_OAUTH_TOKEN,
+        secret=settings.D_OAUTH_TOKEN_SECRET,
     )
 
 
 def search_discogs_release(
-    client: discogs_client.Client, r: Record
+    client: discogs_client.Client, record: Record
 ) -> discogs_client.models.Release:
     """Search matching discogs releases for the actual record.
-    TODO: Simply return the first release in the shortlist. This
+    TODO: Simply returns the first release in the shortlist. This
     does not handle color variants properly ...
     """
     longlist = client.search(
-        r.title,
+        record.title,
         type="release",
-        artist=r.artists.first().artist_name,
-        year=r.year,
+        artist=record.artists.first().artist_name,
+        year=record.year,
     )
-    format_name = "Vinyl" if not r.record_format == 11 else "Cassette"
+    format_name = "Vinyl" if not record.record_format == 11 else "Cassette"
     shortlist = [r for r in longlist if r.formats[0]["name"] == format_name]
     for release in shortlist:
         print(release.id, release.formats)
@@ -55,34 +43,57 @@ def search_discogs_release(
     return shortlist[0]
 
 
-def save_cover_image(r: Record, url: str, upload_dir: Path):
+def save_cover_image(
+    record: Record,
+    release: discogs_client.models.Release,
+    upload_dir: str,
+    resize: bool,
+) -> str | None:
+    """Get image from web, if necessary resize it to max height of 600
+    and save it to the correct folder. By definition cover images have
+    a filename like {record_id}_0.
+    """
+    url = release.images[0]["uri"]
     request = requests.get(url)
-    BASE_DIR = Path(__file__).resolve().parent.parent  # TODO move to better place
 
     try:
         with Image.open(BytesIO(request.content)) as img:
+            if resize and img.height > 600:
+                img = img.resize((600, int(img.height / 600)))
 
-            file_name = f"{r.pk}_0.{img.format.lower()}"
-            path_to_image = Path(f"record_{r.pk}") / file_name
-            full_path = BASE_DIR / "media" / upload_dir / path_to_image
+            filename = f"{upload_dir}/{record.pk}_0.{img.format.lower()}"
+            full_path = settings.MEDIA_ROOT / upload_dir / filename
             full_path.absolute().parent.mkdir(parents=False, exist_ok=True)
             img.save(full_path)
 
-            return path_to_image
+            return filename
 
     except UnidentifiedImageError:
         return None
 
 
-def add_discogs_resources(
-    r: Record, release: discogs_client.models.Release, save_path: Path
+def add_discogs_resources_to_db(
+    record: Record, release: discogs_client.models.Release, filename: str | None
 ):
-    """Add discogs_id and cover_image (path) to Record model. Create Songs."""
-    r.discogs_id = release.id
-    r.cover_image = save_path
-    r.save()
+    """Add discogs_id and cover_image (path) to Record model.
+    Create Songs from tracklist.
+    """
+    record.discogs_id = release.id
+    record.cover_image = filename
+    record.save()
 
     song_list = []
     for song in release.tracklist:
-        song_list.append(Song(record=r, position=song.position, title=song.title))
+        song_list.append(Song(record=record, position=song.position, title=song.title))
     Song.objects.bulk_create(song_list)
+
+
+def main(record: Record, upload_dir: str = "covers", resize: bool = True):
+    client = instantiate_discogs_client()
+    release = search_discogs_release(client, record)
+    filename = save_cover_image(record, release, upload_dir, resize)
+    add_discogs_resources_to_db(record, release, filename)
+
+
+# if __name__ == "__main__":
+#     main(record)

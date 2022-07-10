@@ -168,3 +168,12 @@ ACCOUNT_UNIQUE_EMAIL = True
 # fixtures (folders beside fixtures folder in the individual apps)
 
 FIXTURE_DIRS = [BASE_DIR / "fixtures"]
+
+
+# Discogs API
+
+D_USER_AGENT = yaml_content["DISCOGS"]["USER-AGENT"]
+D_CONSUMER_KEY = yaml_content["DISCOGS"]["CONSUMER_KEY"]
+D_CONSUMER_SECRET = yaml_content["DISCOGS"]["CONSUMER_SECRET"]
+D_OAUTH_TOKEN = yaml_content["DISCOGS"]["OAUTH_TOKEN"]
+D_OAUTH_TOKEN_SECRET = yaml_content["DISCOGS"]["OAUTH_TOKEN_SECRET"]
