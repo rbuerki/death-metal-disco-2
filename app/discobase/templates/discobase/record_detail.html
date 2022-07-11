@@ -27,6 +27,10 @@
     <p>---</p>
     <p>Digi Status: {{ record.is_digitized }}</p>
     <p>Credit Value: {{ record.credit_value }}</p>
+    {% if record.cover_image  %}
+        <p>---</p>
+        <p><a href="{{ record.get_discogs_url }}">Discogs release {{ record.discogs_id }}</p>
+    {% endif %}
 </div>
 {% endblock content %}
     

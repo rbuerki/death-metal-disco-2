@@ -124,8 +124,8 @@ class Record(models.Model):
     def get_absolute_url(self):
         return reverse("discobase:record_detail", args=[str(self.pk)])
 
-    # def set_cover_image_path(self): TODO fix or remove
-    #     return f"record_{self.pk}/{self.pk}_0"
+    def get_discogs_url(self):
+        return f"https://www.discogs.com/release/{str(self.discogs_id)}"
 
     @property
     def artists_str(self):
