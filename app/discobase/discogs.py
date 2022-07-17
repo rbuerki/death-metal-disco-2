@@ -18,8 +18,9 @@ from io import BytesIO
 import discogs_client
 import discogs_client.models
 import django
-from PIL import Image, UnidentifiedImageError
+from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
+from PIL import Image, UnidentifiedImageError
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_disco.settings")
 django.setup()
@@ -116,7 +117,7 @@ def save_cover_image(
     try:
         with Image.open(BytesIO(request.content)) as img:
             img_format = img.format  # only available for original image instance
-            if resize and img.height > 650:  # a little tolerance
+            if resize and img.height > 650:
                 img = img.resize((600, int(img.width / 600)))
             filename = f"{upload_dir}/{record.pk}_0.{img_format.lower()}"
             full_path = settings.MEDIA_ROOT / filename
@@ -143,8 +144,11 @@ def add_discogs_resources_to_db(
     song_list = []
     for song in release.tracklist:
         song_list.append(Song(record=record, position=song.position, title=song.title))
-    Song.objects.bulk_create(song_list)
-    print(f"{len(song_list)} songs added to DB.")
+    try:
+        Song.objects.bulk_create(song_list)
+        print(f"{len(song_list)} songs added to DB.")
+    except IntegrityError:
+        print("No songs added, they already exist in DB.")
 
 
 def main(id: int | None, upload_dir: str = "covers", resize: bool = True):
