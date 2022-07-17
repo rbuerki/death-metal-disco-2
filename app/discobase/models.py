@@ -141,7 +141,7 @@ class Record(models.Model):
 class Song(models.Model):
     # id = models.AutoField(primary_key=True)
     record = models.ForeignKey(Record, on_delete=models.CASCADE, related_name="song")
-    position = models.CharField(max_length=4)
+    position = models.CharField(max_length=20)
     title = models.CharField(max_length=255)
     is_favourite = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

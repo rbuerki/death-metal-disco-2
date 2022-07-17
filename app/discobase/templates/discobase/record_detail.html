@@ -32,7 +32,7 @@
             <p>Credit Value: {{ record.credit_value }}</p>
             {% if record.discogs_id  %}
                 <p>---</p>
-                <p><a href="{{ record.get_discogs_url }}">Discogs release {{ record.discogs_id }}</p>
+                <p><a href="{{ record.get_discogs_url }}" target="_blank" rel="noopener noreferrer">Discogs release {{ record.discogs_id }}</p>
             {% endif %}
         </div>
     </div>

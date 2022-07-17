@@ -38,7 +38,7 @@ class RecordAdmin(admin.ModelAdmin):
         # "genre",  -- TODO throwing errors, cannot query in the pk ;-)
         # "record_format",
     )
-    list_per_page = 30
+    list_per_page = 50
 
 
 admin.site.register(Record, RecordAdmin)
@@ -61,5 +61,25 @@ class TrxCreditAdmin(admin.ModelAdmin):
 admin.site.register(TrxCredit, TrxCreditAdmin)
 
 
+class SongAdmin(admin.ModelAdmin):
+    """Customize trx_credit list view in the admin panel."""
+
+    model = TrxCredit
+    list_display = (
+        "id",
+        "record",
+        "title",
+        "is_favourite",
+    )
+    search_fields = (
+        # "record",  # TODO throwing errors
+        "title"
+    )
+
+    list_per_page = 100
+
+
+admin.site.register(Song, SongAdmin)
+
 # TODO ...
-admin.site.register([Artist, Country, Dump, Genre, Label, RecordFormat, Song])
+admin.site.register([Artist, Country, Dump, Genre, Label, RecordFormat])
