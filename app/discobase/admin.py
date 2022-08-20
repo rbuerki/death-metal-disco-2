@@ -37,7 +37,7 @@ class RecordAdmin(admin.ModelAdmin):
         "title",
         # "genre",  -- TODO throwing errors, cannot query in the pk ;-)
         # "record_format",
-    )
+    )  # TODO  why tuple and not list
     list_per_page = 50
 
 
@@ -52,6 +52,7 @@ class TrxCreditAdmin(admin.ModelAdmin):
         "id",
         "trx_date",
         "trx_type",
+        "credit_saldo",
         "record",
     )
 
@@ -71,10 +72,10 @@ class SongAdmin(admin.ModelAdmin):
         "title",
         "is_favourite",
     )
-    search_fields = (
+    search_fields = [
         # "record",  # TODO throwing errors
-        "title"
-    )
+        "title",
+    ]
 
     list_per_page = 100
 

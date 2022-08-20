@@ -2,7 +2,7 @@
 Stand-alone script to add discogs resources (cover image,
 discogs_id / URL, songtitles). Can be called directly from
 the CLI. Either pass Id of a record as argument or the
-latest record without discogs_id will be chosen.
+first record without discogs_id will be chosen.
 
 run with `python discobase/discogs.py [record.id]`
 
@@ -50,7 +50,7 @@ def get_record(id: int | None) -> Record | None:
         except ObjectDoesNotExist:
             raise SystemExit(f"No record with Id {str(id)} found in discobase.")
     else:
-        record = Record.objects.filter(discogs_id__isnull=True).order_by("-id").first()
+        record = Record.objects.filter(discogs_id__isnull=True).order_by("id").first()
         if record is None:
             raise SystemExit("No record without discogs_id found in discobase.")
 
