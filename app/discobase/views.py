@@ -20,7 +20,7 @@ class RecordListView(ListView):
     def get_queryset(self):
         """Override default queryset by filtering for the
         input from the navbar search window. If there is none
-        return all recors.
+        return all records.
         NOTE: This might slow down the base list page. Maybe I
         should make a separate RecordSearchListView.
         """

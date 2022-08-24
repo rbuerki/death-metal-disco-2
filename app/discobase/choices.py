@@ -1,3 +1,5 @@
+"""This is used for search_TEMP only. TODO may be deleted."""
+
 from discobase.models import RecordFormat, Genre
 
 genre_dict = {g.pk: g.genre_name for g in Genre.objects.all()}
