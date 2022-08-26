@@ -32,6 +32,7 @@ def make_trxcredit_chart(trx):
         # create custom_data array
         trx_ids = [x.id for x in trx_subset]
         record_ids = [str(x.record_id) for x in trx_subset]  # str to handle nulls
+        record_strings = [str(x.record_string) for x in trx_subset]  # str to handle nulls
         trx_types = [x.trx_type for x in trx_subset]
 
         fig.add_trace(
@@ -41,12 +42,13 @@ def make_trxcredit_chart(trx):
                 mode="markers",
                 marker={"color": color_dict[trx_type]},
                 name=trx_type,
-                customdata=list(zip(trx_ids, record_ids, trx_types)),
+                customdata=list(zip(trx_ids, record_ids, record_strings, trx_types)),
                 hovertemplate="%{x}<br>"
                 + "Saldo: %{y}<br>"
                 + "Trx Id: %{customdata[0]}<br>"
                 + "Record Id: %{customdata[1]}<br>"
-                + "<extra>%{customdata[2]}</extra>",
+                + "Record: %{customdata[2]}<br>"
+                + "<extra>%{customdata[3]}</extra>",
             )
         )
 

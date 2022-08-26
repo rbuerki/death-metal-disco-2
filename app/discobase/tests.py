@@ -51,6 +51,7 @@ class DiscobaseModelTests(TestCase):
             trx_value=1,
             credit_saldo=1,
             record=None,
+            record_string=None,
         )
 
         cls.record = Record.objects.create(
@@ -75,12 +76,14 @@ class DiscobaseModelTests(TestCase):
         r3 = Record.objects.get(artists__country__country_code="CH")
         r4 = Record.objects.get(labels__label_name="Capsized Duck Records")
         r5 = Record.objects.get(trx_credit__trx_type="Purchase")
+        r6 = Record.objects.get(artists__artist_name="Raphmadon")
         trx_add = TrxCredit.objects.get(trx_type="Addition")
         trx_pur = TrxCredit.objects.get(trx_type="Purchase")
-        self.assertTrue(r1 == r2 == r3 == r4 == r5)
+        self.assertTrue(r1 == r2 == r3 == r4 == r5 == r6)
         self.assertEqual(trx_add.trx_date, date.today() - timedelta(days=22))
         self.assertEqual(trx_pur.trx_date, date(1999, 1, 1))
         self.assertEqual(trx_pur.credit_saldo, 0)
+        self.assertEqual(trx_pur.record_string, str(r5))
 
     def test_create_addition_credits(self):
         """Addition credits are properly created based
@@ -99,6 +102,7 @@ class DiscobaseModelTests(TestCase):
         pre-delete and a removal trx is added post-delete.
         """
         r = Record.objects.first()
+        r_string = str(r)
         r.delete()
         t1 = Dump.objects.order_by("-id").first().title
         t2 = TrxCredit.objects.order_by("-id").first()
@@ -108,49 +112,50 @@ class DiscobaseModelTests(TestCase):
         self.assertEqual(t2.trx_type, "Removal")
         self.assertEqual(t2.trx_value, 1)
         self.assertEqual(t3, None)
+        self.assertEqual(t2.record_string, r_string)
         self.assertEqual(trx_pur.record, None)
 
 
-# TODO see also dj-books p. 187
-class DiscobaseViewTests(TestCase):
-    """These tests use a fixture."""
+# # TODO see also dj-books p. 187
+# class DiscobaseViewTests(TestCase):
+#     """These tests use a fixture."""
 
-    fixtures = [
-        "discobase_testdata.json",
-    ]
-    record = Record.objects.first()
+#     fixtures = [
+#         "discobase_testdata.json",
+#     ]
+#     record = Record.objects.first()
 
-    def test_record_list_view(self):
-        response = self.client.get(reverse("discobase:record_list"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Pieces")
-        self.assertTemplateUsed("discobase/record_list.html")
+#     def test_record_list_view(self):
+#         response = self.client.get(reverse("discobase:record_list"))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertContains(response, "Pieces")
+#         self.assertTemplateUsed("discobase/record_list.html")
 
-    def test_record_detail_view(self):
-        response = self.client.get(self.record.get_absolute_url())
-        no_response = self.client.get("discobase/records/888888")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(no_response.status_code, 404)
-        self.assertContains(response, "Dismember")
-        self.assertTemplateUsed("discobase/recod_detail.html")
+#     def test_record_detail_view(self):
+#         response = self.client.get(self.record.get_absolute_url())
+#         no_response = self.client.get("discobase/records/888888")
+#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(no_response.status_code, 404)
+#         self.assertContains(response, "Dismember")
+#         self.assertTemplateUsed("discobase/recod_detail.html")
 
-    def test_trxrecord_list_view(self):
-        response = self.client.get(reverse("discobase:trxcredit_list"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Initial Load")
-        self.assertTemplateUsed("discobase/trxcredit_list.html")
+#     def test_trxrecord_list_view(self):
+#         response = self.client.get(reverse("discobase:trxcredit_list"))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertContains(response, "Initial Load")
+#         self.assertTemplateUsed("discobase/trxcredit_list.html")
 
-    def test_trxrecord_chart_view(self):
-        response = self.client.get(reverse("discobase:trxcredit_chart"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Credit Saldo Movement")
-        self.assertTemplateUsed("discobase/trxcredit_chart.html")
+#     def test_trxrecord_chart_view(self):
+#         response = self.client.get(reverse("discobase:trxcredit_chart"))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertContains(response, "Credit Saldo Movement")
+#         self.assertTemplateUsed("discobase/trxcredit_chart.html")
 
-    def test_trxrecord_chart_form(self):
-        form = DateForm()
-        self.assertIn("start_date", form.fields)
-        self.assertIn("end_date", form.fields)
-        # TODO add more ...
+#     def test_trxrecord_chart_form(self):
+#         form = DateForm()
+#         self.assertIn("start_date", form.fields)
+#         self.assertIn("end_date", form.fields)
+#         # TODO add more ...
 
 
 # TODO Discogs client is not compatible with Django test client

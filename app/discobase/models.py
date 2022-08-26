@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.forms import ImageField, IntegerField
 from django.urls import reverse
+from django.utils.functional import cached_property
 
 
 def validate_credit_trx(value):
@@ -127,12 +128,12 @@ class Record(models.Model):
     def get_discogs_url(self):
         return f"https://www.discogs.com/release/{str(self.discogs_id)}"
 
-    @property
+    @cached_property
     def artists_str(self):
         """NOTE: This probably needs an additional db query, when called."""
         return " / ".join([x.artist_name for x in self.artists.all()])
 
-    @property
+    @cached_property
     def labels_str(self):
         """NOTE: This probably needs an additional db query, when called."""
         return " / ".join([x.label_name for x in self.labels.all()])
@@ -165,6 +166,7 @@ class TrxCredit(models.Model):
     record = models.ForeignKey(
         Record, on_delete=models.SET_NULL, related_name="trx_credit", null=True
     )
+    record_string = models.CharField(max_length=200, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

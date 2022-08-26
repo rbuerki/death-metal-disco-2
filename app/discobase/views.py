@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 from django.http import HttpResponse
 from django.db.models import Q
-from django.db.models.signals import post_delete, post_save, pre_delete
+from django.db.models.signals import m2m_changed, post_delete, post_save, pre_delete
 from django.dispatch import receiver
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView, View
@@ -121,7 +121,24 @@ def create_purchase_trx(record) -> None:
         trx_value=trx_value,
         credit_saldo=credit_saldo + trx_value,
         record=record,
+        record_string=None,  # it misses the artist part (m2m) in this state, see next
     )
+
+
+@receiver(m2m_changed, sender=Record.artists.through)
+def record_m2m_update_post_save(sender, instance, action, *args, **kwargs) -> None:
+    """Listen to a change in the record-artists relation and if
+    the record exists in the credit_trx table, update it's record_string.
+    (This is a necessary 'update' of the post_save function, to include
+    the artist relation, which seems not yet properly set in post_save.)
+    """
+    if action == "post_add":
+        try:
+            trx = TrxCredit.objects.get(record_id=instance)
+            trx.record_string = str(instance)
+            trx.save()
+        except ValueError:
+            pass
 
 
 # CREATE REGULAR ADDITION TRX
@@ -147,6 +164,7 @@ def create_addition_credits(TrxCredit, interval_days: int = 10) -> None:
             trx_value=1,
             credit_saldo=(TrxCredit.objects.order_by("-id").first().credit_saldo + 1),
             record=None,
+            record_string=None,
         )
         last_addition_date, days_since_last = get_days_since_last_addition(
             TrxCredit, interval_days
@@ -226,4 +244,5 @@ def create_removal_trx(record) -> None:
         trx_value=trx_value,
         credit_saldo=credit_saldo + trx_value,
         record=None,  # 'cause the record don't live here anymore ...
+        record_string=str(record),
     )
