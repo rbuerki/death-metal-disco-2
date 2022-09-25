@@ -19,8 +19,10 @@ import discogs_client
 import discogs_client.models
 import django
 from django.db import IntegrityError
+from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from PIL import Image, UnidentifiedImageError
+
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_disco.settings")
 django.setup()
@@ -41,8 +43,9 @@ def instantiate_discogs_client() -> discogs_client.Client:
 
 def get_record(id: int | None) -> Record | None:
     """Return Record instance, for which the Id is passed. If
-    no Id is passed, take the last record without a discogs_id.
-    If no record is found raise SystemExit
+    no Id is passed, take the last record without a discogs_id or
+    with a negative discogs_id. If no record is found raise
+    SystemExit.
     """
     if id:
         try:
@@ -50,7 +53,12 @@ def get_record(id: int | None) -> Record | None:
         except ObjectDoesNotExist:
             raise SystemExit(f"No record with Id {str(id)} found in discobase.")
     else:
-        record = Record.objects.filter(discogs_id__isnull=True).order_by("id").first()
+        record = (
+            Record.objects.filter(Q(discogs_id__isnull=True) | Q(discogs_id__lt=0))
+            .order_by("id")
+            .first()
+        )
+
         if record is None:
             raise SystemExit("No record without discogs_id found in discobase.")
 
@@ -70,7 +78,7 @@ def list_discogs_releases(
         artist=record.artists.first().artist_name,
         year=record.year,
     )
-    format_name = "Vinyl" if not record.record_format == 11 else "Cassette"
+    format_name = "Vinyl" if not record.record_format.id == 11 else "Cassette"
     shortlist = [r for r in longlist if r.formats[0]["name"] == format_name]
     if len(shortlist) == 0:
         raise SystemExit(
