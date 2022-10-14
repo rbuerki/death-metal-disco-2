@@ -1,10 +1,12 @@
 """
 Stand-alone script to add discogs resources (cover image,
-discogs_id / URL, songtitles). Can be called directly from
-the CLI. Either pass Id of a record as argument or the
-first record without discogs_id will be chosen.
+discogs_id / URL, songtitles).Is called directly from
+the CLI. Either pass "list" to see all records without valid
+discogs ID, or the ID of a record as argument to the function. 
+If you pass none, the first record without discogs_id will be 
+chosen for addition.
 
-run with `python discobase/discogs.py [record.id]`
+run with `python discobase/discogs.py [record.id | "list"]`
 
 TODO 1: Type hints for Raise and Returns are not properly declared.
 TODO 2: Maybe transform to a custom django_admin function.
@@ -41,9 +43,33 @@ def instantiate_discogs_client() -> discogs_client.Client:
     )
 
 
+def print_help_message() -> None:
+    """In case of invalid argument, print help message."""
+    print(
+        " Invalid argument passed to `discogs.py`. Either (1) pass 'list' \n",
+        "to see all records with no valid discogs ID yet. Or (2) pass \n",
+        "the ID of the record you want to add a discogs reference to. Or \n",
+        "(3) pass no arg at all to return the first record without a \n",
+        "discogs reference.",
+    )
+
+
+def print_record_list() -> None:
+    """Print list of all records without a valid discogs ID. This
+    function is called when the arg 'list' is passed.
+    """
+    records = (
+        Record.objects.filter(Q(discogs_id__isnull=True) | Q(discogs_id__lt=100))
+        .order_by("id")
+        .all()
+    )
+    for record in records:
+        print(f"- {str(record.id)} {record}")
+
+
 def get_record(id: int | None) -> Record | None:
     """Return Record instance, for which the Id is passed. If
-    no Id is passed, take the last record without a discogs_id or
+    no Id is passed, take the last record without a valid discogs_id or
     with a negative discogs_id. If no record is found raise
     SystemExit.
     """
@@ -54,7 +80,7 @@ def get_record(id: int | None) -> Record | None:
             raise SystemExit(f"No record with Id {str(id)} found in discobase.")
     else:
         record = (
-            Record.objects.filter(Q(discogs_id__isnull=True) | Q(discogs_id__lt=0))
+            Record.objects.filter(Q(discogs_id__isnull=True) | Q(discogs_id__lt=100))
             .order_by("id")
             .first()
         )
@@ -159,18 +185,28 @@ def add_discogs_resources_to_db(
         print("No songs added, they already exist in DB.")
 
 
-def main(id: int | None, upload_dir: str = "covers", resize: bool = True):
-    client = instantiate_discogs_client()
-    record = get_record(id)
-    release_list = list_discogs_releases(client, record)
-    release = choose_release_with_user_input(release_list)
-    filename = save_cover_image(record, release, upload_dir, resize)
-    add_discogs_resources_to_db(record, release, filename)
+def main(arg: int | str | None, upload_dir: str = "covers", resize: bool = True):
+    if arg == "list":
+        print_record_list()
+    elif isinstance(arg, int) or arg is None:
+        client = instantiate_discogs_client()
+        record = get_record(arg)
+        release_list = list_discogs_releases(client, record)
+        release = choose_release_with_user_input(release_list)
+        filename = save_cover_image(record, release, upload_dir, resize)
+        add_discogs_resources_to_db(record, release, filename)
+    else:
+        print_help_message()
 
 
 if __name__ == "__main__":
     try:
-        id = int(sys.argv[1])
+        arg = sys.argv[1]
     except IndexError:
-        id = None
-    main(id)
+        arg = None
+    if arg:
+        try:
+            arg = int(arg)
+        except ValueError:
+            pass
+    main(arg)
