@@ -77,7 +77,7 @@ def trxcredit_chart(request):
     trx = (
         TrxCredit.objects.exclude(trx_type="Initial Load")
         .filter(trx_date__year__gte="2021")
-        .order_by("trx_date", "trx_type")
+        .order_by("trx_date", "id", "trx_type")
     )
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
