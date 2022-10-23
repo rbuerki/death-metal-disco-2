@@ -143,8 +143,12 @@ def save_cover_image(
     and save it to the correct folder. By definition cover images have
     a filename like {record_id}_0.
     """
-    url = release.images[0]["uri"]
-    request = requests.get(url)
+    try:
+        url = release.images[0]["uri"]
+        request = requests.get(url)
+    except TypeError:
+        print("ATTENTION - No image found for this record variant.")
+        return None
 
     try:
         with Image.open(BytesIO(request.content)) as img:
@@ -171,7 +175,10 @@ def add_discogs_resources_to_db(
     record.discogs_id = release.id
     record.cover_image = filename
     record.save()
-    print(f"Cover image and Discogs Id for release {release} added to DB.")
+    if filename:
+        print(f"Cover image and Discogs Id for release {release} added to DB.")
+    else:
+        print(f"Discogs Id for release {release} added to DB.")
 
     song_list = []
     for song in release.tracklist:
