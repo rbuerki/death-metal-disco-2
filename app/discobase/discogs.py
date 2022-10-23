@@ -119,14 +119,12 @@ def list_discogs_releases(
 def choose_release_with_user_input(
     shortlist: list[discogs_client.models.Release],
 ) -> discogs_client.models.Release | None:
-    """If there's more than one release in the sortlist, let the
-    user choose the release. Else simply return the only release.
+    """Let the user choose the release from the list (or raise a
+    SystemExit if no record fits).
     """
-    if len(shortlist) == 1:
-        return shortlist[0]
     user_input = "xyz"
     options = [str(x) for x in range(len(shortlist))]
-    promt_message = "Please choose a release from the list: "
+    promt_message = "Please choose a release from the list (or 'exit'): "
     while user_input not in options or user_input != "exit":
         user_input = input(promt_message)
         if user_input in options:
