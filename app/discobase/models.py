@@ -107,7 +107,7 @@ class Record(models.Model):
     cover_image = models.ImageField(
         upload_to="covers/", default="covers/_placeholder.png"
     )
-    discogs_id = models.IntegerField(null=True)
+    discogs_id = models.IntegerField(default=-1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
