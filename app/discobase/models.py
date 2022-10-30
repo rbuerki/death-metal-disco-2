@@ -128,6 +128,14 @@ class Record(models.Model):
     def get_discogs_url(self):
         return f"https://www.discogs.com/release/{str(self.discogs_id)}"
 
+    def get_next_records_url(self):
+        next_record = Record.objects.filter(id__gt=self.id).order_by("id").first()
+        return next_record.get_absolute_url()
+
+    def get_previous_records_url(self):
+        prev_record = Record.objects.filter(id__lt=self.id).order_by("-id").first()
+        return prev_record.get_absolute_url()
+
     @cached_property
     def artists_str(self):
         """NOTE: This probably needs an additional db query, when called."""

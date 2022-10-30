@@ -5,6 +5,15 @@
 {% block content %}
 <div class="container" style="padding-top: 20px";>
     <div class="row">
+        <div class="col-1">
+            {% if record.get_previous_records_url is not None %}
+                <a href="{{ record.get_previous_records_url }}" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                    </svg>
+                </a>
+            {% endif %}
+        </div>
         <div class="col">
             {% if record.cover_image  %}
                 <img class="recordcover" src="{{ record.cover_image.url }}" alt="{{ record.title }}">
@@ -31,10 +40,19 @@
             <p>---</p>
             <p>Digi Status: {{ record.is_digitized }}</p>
             <p>Credit Value: {{ record.credit_value }}</p>
-            {% if record.discogs_id  %}
+            {% if record.discogs_id > 100 %}
                 <p>---</p>
-                <p><a href="{{ record.get_discogs_url }}" target="_blank" rel="noopener noreferrer">Discogs release {{ record.discogs_id }}</p>
+                <p><a href="{{ record.get_discogs_url }}" target="_blank" rel="noopener noreferrer">Discogs release {{ record.discogs_id }}</a></p>
             {% endif %}
+        </div>
+        <div class="col-1">
+            {% if record.get_next_records_url is not None %}
+                <a href="{{ record.get_next_records_url }}" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                    </svg>
+                </a>
+            {% endif %}    
         </div>
     </div>
 </div>
