@@ -26,7 +26,7 @@ class RecordListView(ListView):
         """
         query = self.request.GET.get("q")
         if not query:
-            return Record.objects.all()
+            return Record.objects.all().order_by("-purchase_date")
         else:
             return Record.objects.filter(
                 Q(title__icontains=query)
