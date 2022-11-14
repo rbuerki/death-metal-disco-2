@@ -39,7 +39,7 @@ class RecordListView(ListView):
 class TrxCreditListView(ListView):
     model = TrxCredit
     context_object_name = "trxcredit_list"
-    queryset = TrxCredit.objects.order_by("-trx_date")
+    queryset = TrxCredit.objects.order_by("-id")
 
 
 class RecordDetailView(DetailView):

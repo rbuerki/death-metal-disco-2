@@ -32,7 +32,7 @@ from django.conf import settings
 from discobase.models import Record, Song
 
 
-def instantiate_discogs_client() -> discogs_client.Client:
+def instantiate_discogs_client() -> discogs_client.client.Client:
     """Return an authenticated discogs client instance."""
     return discogs_client.Client(
         settings.D_USER_AGENT,
@@ -139,13 +139,13 @@ def save_cover_image(
     upload_dir: str,
     resize: bool,
 ) -> str | None:
-    """Get image from web, if necessary resize it to max height of 600
+    """Fetch image from web, if necessary resize it to max height of 600
     and save it to the correct folder. By definition cover images have
     a filename like {record_id}_0.
     """
     try:
         url = release.images[0]["uri"]
-        request = requests.get(url)
+        request = requests.get(url, headers={"user-agent": f"{settings.D_USER_AGENT}"})
     except TypeError:
         print("ATTENTION - No image found for this record variant.")
         return None
@@ -159,10 +159,10 @@ def save_cover_image(
             full_path = settings.MEDIA_ROOT / filename
             full_path.absolute().parent.mkdir(parents=False, exist_ok=True)
             img.save(full_path)
-
             return filename
 
     except UnidentifiedImageError:
+        print("ATTENTION - Something went wrong while trying to read the image.")
         return None
 
 
