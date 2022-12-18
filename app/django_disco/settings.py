@@ -21,8 +21,37 @@ with open(BASE_DIR.parent / "config_dev.yaml", "r") as f:
 # Security
 
 SECRET_KEY = yaml_content["DJANGO"]["SECRET_KEY"]
-DEBUG = yaml_content["DJANGO"]["DEBUG"]  # TODO for prod
-ALLOWED_HOSTS = []  # TODO for prod
+ALLOWED_HOSTS = []  # TODO change for prod
+
+# the following are defined in config_dev only
+try:
+    DEBUG = yaml_content["DJANGO"]["DEBUG"]
+except KeyError:
+    DEBUG = False
+try:
+    SECURE_SSL_REDIRECT = yaml_content["DJANGO"]["SECURE_SSL_REDIRECT"]
+except KeyError:
+    SECURE_SSL_REDIRECT = True
+try:
+    SECURE_HSTS_SECONDS = yaml_content["DJANGO"]["SECURE_HSTS_SECONDS"]
+except KeyError:
+    SECURE_HSTS_SECONDS = 30 * 24 * 60 * 60  # 30 days
+try:
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = yaml_content["DJANGO"]["SECURE_HSTS_INCLUDE_SUBDOMAINS"]  # noqa
+except KeyError:
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+try:
+    SECURE_HSTS_PRELOAD = yaml_content["DJANGO"]["DJANGO_SECURE_HSTS_PRELOAD"]
+except KeyError:
+    SECURE_HSTS_PRELOAD = True
+try:
+    SESSION_COOKIE_SECURE = yaml_content["DJANGO"]["SESSION_COOKIE_SECURE"]
+except KeyError:
+    SESSION_COOKIE_SECURE = True
+try:
+    CSRF_COOKIE_SECURE = yaml_content["DJANGO"]["CSRF_COOKIE_SECURE"]
+except KeyError:
+    CSRF_COOKIE_SECURE = True
 
 
 # Application definition

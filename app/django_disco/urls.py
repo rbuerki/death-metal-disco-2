@@ -19,8 +19,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    # Django Admin
-    path("admin/", admin.site.urls),
+    # Django Admin (with random silly custom url to harden against attacks)
+    path("raph-is-the-admin/", admin.site.urls),
     # Django user management (login, logout)
     path("accounts/", include("allauth.urls")),
     # Local apps
