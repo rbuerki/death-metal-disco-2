@@ -21,7 +21,7 @@ urlpatterns = [
     ),
     path(
         "trxcredit_chart/",
-        views.trxcredit_chart,
+        views.TrxCreditChartView.as_view(),
         name="trxcredit_chart",
     ),
     path(

@@ -47,6 +47,37 @@ class RecordDetailView(DetailView):
     context_object_name = "record"
 
 
+class TrxCreditChartView(View):
+    def get(self, request):
+        # First, check if an addition trx has to be added
+        # TODO This is not very efficient, and if it stays here, then change
+        # the function to read from trx directly, so we hit the db only once
+        create_addition_credits(TrxCredit)
+        result = self.display_trxcredit_chart(request)
+        return HttpResponse(result)
+
+    def display_trxcredit_chart(self, request):
+        """Display the credittrx_chart. Start- and end date
+        can be changed by the user (using the DateForm).
+        """
+        trx = (
+            TrxCredit.objects.exclude(trx_type="Initial Load")
+            .filter(trx_date__year__gte="2021")
+            .order_by("trx_date", "id", "trx_type")
+        )
+        start_date = request.GET.get("start_date")
+        end_date = request.GET.get("end_date")
+
+        if start_date:
+            trx = trx.filter(trx_date__gte=start_date)
+        if end_date:
+            trx = trx.filter(trx_date__lte=end_date)
+
+        chart = make_trxcredit_chart(trx)
+        context = {"chart": chart, "form": DateForm}
+        return render(request, "discobase/trxcredit_chart.html", context)
+
+
 # TODO integrate credit_addition_trx
 # class TrxCreditView(View):
 #     def get(self, request):
@@ -60,36 +91,6 @@ def search_TEMP(request):
 
     context = {"form": SearchForm, "format_choices": format_choices}
     return render(request, "discobase/search_TEMP.html", context)
-
-
-# DISPLAY CHARTS
-
-
-def trxcredit_chart(request):
-    """Display the credittrx_chart. Start- and end date
-    can be adapted by the user (using the DateForm).
-    """
-    # First, check if an addition trx has to be added
-    # TODO This is not very efficient, and if it stays here, then change
-    # the function to read from trx directly, so we hit the db only once
-    create_addition_credits(TrxCredit)
-
-    trx = (
-        TrxCredit.objects.exclude(trx_type="Initial Load")
-        .filter(trx_date__year__gte="2021")
-        .order_by("trx_date", "id", "trx_type")
-    )
-    start_date = request.GET.get("start_date")
-    end_date = request.GET.get("end_date")
-
-    if start_date:
-        trx = trx.filter(trx_date__gte=start_date)
-    if end_date:
-        trx = trx.filter(trx_date__lte=end_date)
-
-    chart = make_trxcredit_chart(trx)
-    context = {"chart": chart, "form": DateForm}
-    return render(request, "discobase/chart.html", context)
 
 
 # CREATE PURCHASE TRX ON RECORD INSERT
