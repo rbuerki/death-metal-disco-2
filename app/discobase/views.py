@@ -78,13 +78,6 @@ class TrxCreditChartView(View):
         return render(request, "discobase/trxcredit_chart.html", context)
 
 
-# TODO integrate credit_addition_trx
-# class TrxCreditView(View):
-#     def get(self, request):
-#         # <view logic>
-#         return HttpResponse('result')
-
-
 # TODO for testing only
 def search_TEMP(request):
     from discobase.choices import format_choices
