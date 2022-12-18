@@ -37,3 +37,4 @@ dependencies:
       - environs[django]
       - python3-discogs-client
       - oauth2
+      - django-debug-toolbar
