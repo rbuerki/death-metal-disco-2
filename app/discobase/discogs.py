@@ -6,7 +6,7 @@ discogs ID, or the ID of a record as argument to the function.
 If you pass none, the first record without discogs_id will be 
 chosen for addition.
 
-run with `python discobase/discogs.py [record.id | "list"]`
+run from `app` directory with `python discobase/discogs.py [record.id | "list"]`
 
 TODO 1: Type hints for Raise and Returns are not properly declared.
 TODO 2: Maybe transform to a custom django_admin function.
