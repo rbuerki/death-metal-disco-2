@@ -2,7 +2,7 @@ name: django
 channels:
   - conda-forge
 dependencies:
-  - python==3.10
+  - python==3.12
   - pip
   # CODE FORMATTERS & lINTERS
   - black
@@ -30,7 +30,7 @@ dependencies:
       - rich
       - xlsxwriter
       # DJANGO & WEB
-      - Django==4.0.4
+      - Django==4.2.3
       - django-allauth
       - django-crispy-forms
       - crispy-bootstrap5
