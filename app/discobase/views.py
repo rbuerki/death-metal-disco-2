@@ -138,7 +138,7 @@ def record_m2m_update_post_save(sender, instance, action, *args, **kwargs) -> No
 # CREATE REGULAR ADDITION TRX
 
 
-def create_addition_credits(TrxCredit, interval_days: int = 10) -> None:
+def create_addition_credits(TrxCredit, interval_days: int = 14) -> None:
     """Every x days a new credit is added (to be spent
     on purchasing new records). This function checks
     the delta in days since the last addition and inserts
@@ -149,7 +149,7 @@ def create_addition_credits(TrxCredit, interval_days: int = 10) -> None:
         TrxCredit, interval_days
     )
 
-    while days_since_last >= 10:
+    while days_since_last >= interval_days:
         trx_date = last_addition_date + timedelta(days=interval_days)
 
         _ = TrxCredit.objects.create(
@@ -182,7 +182,7 @@ def get_days_since_last_addition(TrxCredit, interval_days) -> tuple[date, int]:
     else:
         # Prepare for very first addition trx
         last_addition_date = date.today() - timedelta(days=interval_days)
-        days_since_last = 10
+        days_since_last = interval_days
 
     return last_addition_date, days_since_last
 
