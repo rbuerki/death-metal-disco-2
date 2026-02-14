@@ -2,8 +2,8 @@
 Stand-alone script to add discogs resources (cover image,
 discogs_id / URL, songtitles).Is called directly from
 the CLI. Either pass "list" to see all records without valid
-discogs ID, or the ID of a record as argument to the function. 
-If you pass none, the first record without discogs_id will be 
+discogs ID, or the ID of a record as argument to the function.
+If you pass none, the first record without discogs_id will be
 chosen for addition.
 
 run from `app` directory with `python discobase/discogs.py [record.id | "list"]`
@@ -25,6 +25,11 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from PIL import Image, UnidentifiedImageError
 
+
+# TODO - somehow solve this with vsc-settings-json
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.append(str(BASE_DIR))
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_disco.settings")
 django.setup()

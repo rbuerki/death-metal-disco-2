@@ -13,4 +13,4 @@ See notebook in dev folder, based on:
 
 ### Trouble Shooting
 
-- __Server not running__: Open WT as Admin and type `net start postgresql-x64-13` (you can double-check the service name by running `services.msc` in the windows console). You probably will then also have to start the pgAdmin tool and re-enter the password for the master user.
+- __Server not running__: Open WT as Admin and type `net start postgresql-x64-17` (you can double-check the service name by running `services.msc` in the windows console). You probably will then also have to start the pgAdmin tool and re-enter the password for the master user.

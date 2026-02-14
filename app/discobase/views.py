@@ -1,9 +1,9 @@
 from datetime import date, timedelta
 
-from django.http import HttpResponse
 from django.db.models import Q
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_delete
 from django.dispatch import receiver
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView, View
 
@@ -138,7 +138,7 @@ def record_m2m_update_post_save(sender, instance, action, *args, **kwargs) -> No
 # CREATE REGULAR ADDITION TRX
 
 
-def create_addition_credits(TrxCredit, interval_days: int = 14) -> None:
+def create_addition_credits(TrxCredit, interval_days: int = 30) -> None:
     """Every x days a new credit is added (to be spent
     on purchasing new records). This function checks
     the delta in days since the last addition and inserts
