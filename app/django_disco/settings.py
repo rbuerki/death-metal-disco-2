@@ -117,12 +117,8 @@ WSGI_APPLICATION = "django_disco.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": yaml_content["POSTGRES"]["DATABASE"],
-        "USER": yaml_content["POSTGRES"]["USER"],
-        "PASSWORD": yaml_content["POSTGRES"]["PASSWORD"],
-        "HOST": yaml_content["POSTGRES"]["HOST"],
-        "PORT": yaml_content["POSTGRES"]["PORT"],
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
