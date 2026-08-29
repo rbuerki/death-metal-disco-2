@@ -4,8 +4,6 @@
 config.yaml
 config_dev.yaml
 config_prod.yaml
-data/
-trash/
 app/fixtures
 app/media
 
@@ -18,3 +16,89 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media
+
+# general stuff
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments (uv, venv, direnv)
+**/.venv/
+**/.direnv/
+.venv/
+.direnv/
+
+# uv cache (local machine only)
+.uv/
+uv.lock.bak
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Project-specific scratch space
+mnt/wsl/
+tmp/
+scratch/
+
+# Docker (professional user)
+docker-data/
+**/docker-data/
+
+# Airflow (professional user)
+airflow/
+logs/
+plugins/__pycache__/
+
+# Coverage / testing
+.coverage
+htmlcov/
+pytest_cache/
+
+# Environment files
+.env
+.env.*
+
+# Windows/WSL zone-identifier metadata (e.g. from files downloaded on Windows)
+*:Zone.Identifier
+
+# Node (if ever used)
+node_modules/
+
+# Jupyter notebooks
+*.ipynb
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# DuckDB
+*.db
+
+# data
+data/
+*.csv
+*.parquet
+

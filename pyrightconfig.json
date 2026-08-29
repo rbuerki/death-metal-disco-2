@@ -1,0 +1,17 @@
+{
+  "exclude": [
+    "**/__pycache__/**",
+    "**/node_modules/**",
+    "**/.venv/**",
+    "**/.pytest_cache/**",
+    "**/.ruff_cache/**",
+    "**/.mypy_cache/**",
+    "**/build/**",
+    "**/dist/**"
+  ],
+  "reportMissingImports": "warning",
+  "reportMissingModuleSource": "warning",
+  "useLibraryCodeForTypes": true,
+  "venvPath": ".",
+  "venv": ".venv"
+}

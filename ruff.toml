@@ -1,0 +1,57 @@
+line-length = 90
+extend-exclude = ["*/.venv/*", "*/.direnv/*"]
+
+[format]
+line-ending = "lf"
+
+[lint]
+select = [
+  "E",    # Pycodestyle (style rules)
+  "F",    # Pyflakes (real bugs)
+  "F841", # Explicitly enable unused variable detection
+  "I",    # isort (tidy imports)
+  "B",    # flake8-bugbear (common bugs)
+  "UP",   # pyupgrade (python syntax upgrade)
+  "SIM",  # flake8-simplify (common simplification patterns)
+  "ANN",  # flake8-annotations (type hints)
+  "D",    # pydocstyle (docstring style)
+]
+
+# Disable fix for unused imports (`F401`)
+unfixable = ["F401"]
+
+[lint.mccabe]
+max-complexity = 12
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.per-file-ignores]
+"*/tests/*" = [
+  "D101", # Missing docstring in public class
+  "D102", # Missing docstring in public method
+  "D103", # Missing docstring in public function
+  "D104", # Missing docstring in public package
+  "ANN",  # Type annotations not required in tests
+]
+"*/workflows/*" = [
+  "D104",   # Missing docstring in public package
+  "ANN001", # Missing type annotation for function argument (Airflow context dicts)
+  "ANN003", # Missing type annotation for **kwargs/**context
+  "ANN204", # Missing return type annotation for special method
+  "ANN401", # Dynamically typed Any is acceptable in config functions
+]
+"*/__init__.py" = [
+  "D104", # Missing docstring in public package
+]
+"*" = [
+  "D105", # Missing docstring in magic method
+  "D107", # Missing docstring in __init__
+]
+
+[lint.flake8-annotations]
+allow-star-arg-any = true
+mypy-init-return = true
+
+[lint.isort]
+lines-after-imports = 2
