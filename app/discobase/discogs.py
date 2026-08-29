@@ -1,6 +1,6 @@
 """
 Stand-alone script to add discogs resources (cover image,
-discogs_id / URL, songtitles).Is called directly from
+discogs_id / URL, songtitles). Is called directly from
 the CLI. Either pass "list" to see all records without valid
 discogs ID, or the ID of a record as argument to the function.
 If you pass none, the first record without discogs_id will be
@@ -13,31 +13,32 @@ TODO 2: Maybe transform to a custom django_admin function.
 """
 
 import os
-import requests
 import sys
 from io import BytesIO
+
+# TODO - somehow solve this with vsc-settings-json
+from pathlib import Path
 
 import discogs_client
 import discogs_client.models
 import django
+import requests
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
 from PIL import Image, UnidentifiedImageError
 
-
-# TODO - somehow solve this with vsc-settings-json
-from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR))
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_disco.settings")
 django.setup()
 from django.conf import settings
+
 from discobase.models import Record, Song
 
 
-def instantiate_discogs_client() -> discogs_client.client.Client:
+def instantiate_discogs_client() -> discogs_client.Client:
     """Return an authenticated discogs client instance."""
     return discogs_client.Client(
         settings.D_USER_AGENT,
@@ -69,7 +70,7 @@ def print_record_list() -> None:
         .all()
     )
     for record in records:
-        print(f"- {str(record.id)} {record}")
+        print(f"- {record.id!s} {record}")
 
 
 def get_record(id: int | None) -> Record | None:
@@ -82,7 +83,7 @@ def get_record(id: int | None) -> Record | None:
         try:
             record = Record.objects.get(pk=id)
         except ObjectDoesNotExist:
-            raise SystemExit(f"No record with Id {str(id)} found in discobase.")
+            raise SystemExit(f"No record with Id {id!s} found in discobase.")
     else:
         record = (
             Record.objects.filter(Q(discogs_id__isnull=True) | Q(discogs_id__lt=100))
@@ -113,7 +114,7 @@ def list_discogs_releases(
     shortlist = [r for r in longlist if r.formats[0]["name"] == format_name]
     if len(shortlist) == 0:
         raise SystemExit(
-            f"No release found on discogs for record with id {str(record.pk)}."
+            f"No release found on discogs for record with id {record.pk!s}."
         )
     for pos, release in enumerate(shortlist):
         print(f"{pos} - {release.id} {release.formats}")
