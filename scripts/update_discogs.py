@@ -1,15 +1,10 @@
-"""Stand-alone script to add discogs resources (cover image,
-discogs_id / URL, songtitles). Is called directly from
-the CLI. Either pass "list" to see all records without valid
-discogs ID, or the ID of a record as argument to the function.
-If you pass none, the first record without discogs_id will be
-chosen for addition.
+"""Stand-alone script to fetch discogs data (image, discogs_id / URL, songtitles).
 
-run from project root with `uv run python scripts/update_discogs.py [record.id | "list"]`
-
-TODO 1: Type hints for Raise and Returns are not properly declared.
-TODO 2: Maybe transform to a custom django_admin function.
+See README.md for usage instructions.
 """
+
+# TODO 1: Type hints for Raise and Returns are not properly declared.
+# TODO 2: Maybe transform to a custom django_admin function.
 
 import os
 import sys
