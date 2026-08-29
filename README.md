@@ -41,6 +41,23 @@ uv run python app/manage.py runserver
 
 It will open in your browser at `http://127.0.0.1:8000/`
 
+## Standalone scripts
+
+Run standalone tools from the project root.
+
+### Update Discogs metadata
+
+```bash
+# list records missing a valid discogs_id
+uv run python scripts/update_discogs.py list
+
+# update the first record without a valid discogs_id
+uv run python scripts/update_discogs.py
+
+# update a specific record by ID
+uv run python scripts/update_discogs.py 123
+```
+
 ## Resources
 
 ### Discogs API
@@ -55,7 +72,7 @@ See notebook in dev folder, based on:
 
 ### Prio 1
 
-- Refactor discogs.py -> move to sripts folder, call update_discogs.py, maybe use typer
+- Refactor discogs.py -> moved to scripts/update_discogs.py, maybe use typer
 - pass formatting checks
 - resolve TODOs
 

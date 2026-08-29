@@ -5,7 +5,7 @@ discogs ID, or the ID of a record as argument to the function.
 If you pass none, the first record without discogs_id will be
 chosen for addition.
 
-run from `app` directory with `python discobase/discogs.py [record.id | "list"]`
+run from project root with `uv run python scripts/update_discogs.py [record.id | "list"]`
 
 TODO 1: Type hints for Raise and Returns are not properly declared.
 TODO 2: Maybe transform to a custom django_admin function.
@@ -14,8 +14,6 @@ TODO 2: Maybe transform to a custom django_admin function.
 import os
 import sys
 from io import BytesIO
-
-# TODO - somehow solve this with vsc-settings-json
 from pathlib import Path
 
 import discogs_client
@@ -28,14 +26,15 @@ from django.db.models import Q
 from PIL import Image, UnidentifiedImageError
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-sys.path.append(str(BASE_DIR))
+# Make app packages importable when running as a standalone script.
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+APP_DIR = PROJECT_ROOT / "app"
+sys.path.insert(0, str(APP_DIR))
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_disco.settings")
 django.setup()
-from django.conf import settings
-
 from discobase.models import Record, Song
+from django.conf import settings
 
 
 def instantiate_discogs_client() -> discogs_client.Client:
@@ -52,7 +51,7 @@ def instantiate_discogs_client() -> discogs_client.Client:
 def print_help_message() -> None:
     """In case of invalid argument, print help message."""
     print(
-        " Invalid argument passed to `discogs.py`. Either (1) pass 'list' \n",
+        " Invalid argument passed to `update_discogs.py`. Either (1) pass 'list' \n",
         "to see all records with no valid discogs ID yet. Or (2) pass \n",
         "the ID of the record you want to add a discogs reference to. Or \n",
         "(3) pass no arg at all to return the first record without a \n",
