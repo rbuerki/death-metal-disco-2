@@ -1,0 +1,31 @@
+[project]
+name = "death-metal-disco"
+version = "0.1.0"
+description = "Django web app to manage a record collection, with Discogs API integration."
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+
+dependencies = [
+    "django>=5.1,<5.2",
+    "django-allauth",
+    "django-crispy-forms",
+    "crispy-bootstrap5",
+    "django-debug-toolbar",
+    "psycopg2-binary",
+    "pyyaml",
+    "pillow",
+    "requests",
+    "python3-discogs-client",
+    "plotly",
+]
+
+[tool.uv]
+cache-keys = [{ file = "pyproject.toml" }]
+
+[dependency-groups]
+# Packages only needed for the exploratory / one-off scripts in dev/ and db_mgmt/
+dev = [
+    "sqlalchemy",
+    "jupyter",
+    "rich",
+]

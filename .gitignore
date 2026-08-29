@@ -1,0 +1,20 @@
+# specific to death-metal-disco project
+
+# raph
+config.yaml
+config_dev.yaml
+config_prod.yaml
+data/
+trash/
+app/fixtures
+app/media
+
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media
