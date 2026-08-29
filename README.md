@@ -1,6 +1,45 @@
-# DEATH METAL DISCO V2
+# DEATH METAL DISCO
 
-A web app to manage my record collection. WIP ...
+A database (-> "disobase") with django web app to manage my record collection. WIP ...
+
+## Setup
+
+```bash
+direnv allow        # activates the uv-managed venv for this folder
+uv sync              # installs dependencies (app deps + dev tools)
+```
+
+Create `config_dev.yaml` in the project root (gitignored, not included in the repo) with:
+
+```yaml
+DJANGO:
+  SECRET_KEY: <your-secret-key>
+  DEBUG: True
+
+DISCOGS:
+  USER-AGENT: <app-name>/1.0
+  CONSUMER_KEY: <discogs-consumer-key>
+  CONSUMER_SECRET: <discogs-consumer-secret>
+  OAUTH_TOKEN: <discogs-oauth-token>
+  OAUTH_TOKEN_SECRET: <discogs-oauth-token-secret>
+```
+
+Then create the database and (optionally) an admin user:
+
+```bash
+uv run python app/manage.py migrate
+uv run python app/manage.py createsuperuser
+```
+
+## Run web app
+
+From the project root, type:
+
+```bash
+uv run python app/manage.py runserver
+```
+
+It will open in your browser at `http://127.0.0.1:8000/`
 
 ## Resources
 
@@ -11,13 +50,9 @@ See notebook in dev folder, based on:
 - [Authentication with oauth2](https://github.com/jesseward/discogs-oauth-example/blob/master/discogs_example.py)
 - [Fetching data with discogs-client](https://python3-discogs-client.readthedocs.io/en/latest/fetching_data_repl.html)
 
-### Trouble Shooting
 
-- __Server not running__: Open WT as Admin and type `net start postgresql-x64-17` (you can double-check the service name by running `services.msc` in the windows console). You probably will then also have to start the pgAdmin tool and re-enter the password for the master user.
+## Refactoring 2026
 
-### Refactoring 2026
-
-- Migrate to sqlite or other lightweight DB
 - revert the Dump, reinsert the dumped records in the DB, but with a Deleted timestamp
 - read WHERE Deleted is NULL for all usecases
 - Ask where it can be deployed cheaply, what has to be true for deployment ...
