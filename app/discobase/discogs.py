@@ -1,5 +1,4 @@
-"""
-Stand-alone script to add discogs resources (cover image,
+"""Stand-alone script to add discogs resources (cover image,
 discogs_id / URL, songtitles). Is called directly from
 the CLI. Either pass "list" to see all records without valid
 discogs ID, or the ID of a record as argument to the function.
@@ -27,6 +26,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.db.models import Q
 from PIL import Image, UnidentifiedImageError
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR))
@@ -61,8 +61,9 @@ def print_help_message() -> None:
 
 
 def print_record_list() -> None:
-    """Print list of all records without a valid discogs ID. This
-    function is called when the arg 'list' is passed.
+    """Print list of all records without a valid discogs ID.
+
+    This function is called when the arg 'list' is passed.
     """
     records = (
         Record.objects.filter(Q(discogs_id__isnull=True) | Q(discogs_id__lt=100))
@@ -74,10 +75,10 @@ def print_record_list() -> None:
 
 
 def get_record(id: int | None) -> Record | None:
-    """Return Record instance, for which the Id is passed. If
-    no Id is passed, take the last record without a valid discogs_id or
-    with a negative discogs_id. If no record is found raise
-    SystemExit.
+    """Return record instance, for which the Id is passed.
+
+    If no Id is passed, take the last record without a valid discogs_id or
+    with a negative discogs_id. If no record is found raise SystemExit.
     """
     if id:
         try:
@@ -101,8 +102,9 @@ def get_record(id: int | None) -> Record | None:
 def list_discogs_releases(
     client: discogs_client.Client, record: Record
 ) -> list[discogs_client.models.Release]:
-    """Search matching discogs releases for the actual record
-    the print and return a list. Exit, if no releases are found.
+    """Return a list of matching discogs releases for the actual record.
+
+    The function will print the shortlist or exit, if no releases are found.
     """
     longlist = client.search(
         record.title,
@@ -113,9 +115,7 @@ def list_discogs_releases(
     format_name = "Vinyl" if not record.record_format.id == 11 else "Cassette"
     shortlist = [r for r in longlist if r.formats[0]["name"] == format_name]
     if len(shortlist) == 0:
-        raise SystemExit(
-            f"No release found on discogs for record with id {record.pk!s}."
-        )
+        raise SystemExit(f"No release found on discogs for record with id {record.pk!s}.")
     for pos, release in enumerate(shortlist):
         print(f"{pos} - {release.id} {release.formats}")
 
@@ -125,8 +125,9 @@ def list_discogs_releases(
 def choose_release_with_user_input(
     shortlist: list[discogs_client.models.Release],
 ) -> discogs_client.models.Release | None:
-    """Let the user choose the release from the list (or raise a
-    SystemExit if no record fits).
+    """Let the user choose the release from the list.
+
+    Raise SystemExit if no record fits.
     """
     user_input = "xyz"
     options = [str(x) for x in range(len(shortlist))]
@@ -145,9 +146,10 @@ def save_cover_image(
     upload_dir: str,
     resize: bool,
 ) -> str | None:
-    """Fetch image from web, if necessary resize it to max height of 600
-    and save it to the correct folder. By definition cover images have
-    a filename like {record_id}_0.
+    """Fetch image from web and save it to the cover/ folder.
+
+    if necessary resize it to max height of 600. By definition cover images
+    get a filename like {record_id}_0.
     """
     try:
         url = release.images[0]["uri"]
@@ -176,7 +178,8 @@ def add_discogs_resources_to_db(
     record: Record, release: discogs_client.models.Release, filename: str | None
 ):
     """Add discogs_id and cover_image (path) to Record model.
-    Create Songs from tracklist.
+
+    Also create Songs from tracklist.
     """
     record.discogs_id = release.id
     record.cover_image = filename

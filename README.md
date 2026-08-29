@@ -53,6 +53,18 @@ See notebook in dev folder, based on:
 
 ## Refactoring 2026
 
+### Prio 1
+
+- Refactor discogs.py -> move to sripts folder, call update_discogs.py, maybe use typer
+- pass formatting checks
+- resolve TODOs
+
+### Prio 2
+
+- use harlequin as a frontend for sqlite
+- Ask where it can be deployed cheaply, what has to be true for deployment ...
+
+### Prio 3
+
 - revert the Dump, reinsert the dumped records in the DB, but with a Deleted timestamp
 - read WHERE Deleted is NULL for all usecases
-- Ask where it can be deployed cheaply, what has to be true for deployment ...
