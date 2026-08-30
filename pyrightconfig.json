@@ -11,9 +11,6 @@
   ],
   "reportMissingImports": "warning",
   "reportMissingModuleSource": "warning",
-  "extraPaths": [
-    "app"
-  ],
   "useLibraryCodeForTypes": true,
   "venvPath": ".",
   "venv": ".venv"

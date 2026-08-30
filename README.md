@@ -41,7 +41,7 @@ uv run python app/manage.py runserver
 
 It will open in your browser at `http://127.0.0.1:8000/`
 
-## Standalone scripts
+## Management Commands
 
 Run standalone tools from the project root.
 
@@ -49,13 +49,13 @@ Run standalone tools from the project root.
 
 ```bash
 # list records missing a valid discogs_id
-uv run python scripts/update_discogs.py list
+uv run python app/manage.py update_discogs list
 
 # update the first record without a valid discogs_id
-uv run python scripts/update_discogs.py
+uv run python app/manage.py update_discogs
 
 # update a specific record by ID
-uv run python scripts/update_discogs.py 123
+uv run python app/manage.py update_discogs 123
 ```
 
 ## Resources
@@ -72,7 +72,10 @@ See notebook in dev folder, based on:
 
 ### Prio 1
 
-- Refactor discogs.py -> moved to scripts/update_discogs.py, maybe use typer
+- update_discogs
+  - update README
+  - use rich for markdown and can I use typer here? 
+- create 
 - pass formatting checks
 - resolve TODOs
 
