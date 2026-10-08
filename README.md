@@ -49,7 +49,7 @@ Run standalone tools from the project root.
 
 ```bash
 # list records missing a valid discogs_id
-uv run python app/manage.py update_discogs list
+uv run python app/manage.py update_discogs --list
 
 # update the first record without a valid discogs_id
 uv run python app/manage.py update_discogs
